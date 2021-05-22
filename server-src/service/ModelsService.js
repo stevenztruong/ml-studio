@@ -10,6 +10,7 @@ var dbConnection = require('../utils/dbUtil').connection;
  **/
 exports.createModel = function(body) {
   return new Promise(function(resolve, reject) {
+    console.log(body);
     // dbConnection.connect();
     dbConnection.query(`INSERT INTO Model (userId, modelName, modelType) VALUES (${body.userId}, "${body.modelName}", "${body.modelType}")`, function (error, results, fields) {
       if (error) throw error;
