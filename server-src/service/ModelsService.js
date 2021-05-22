@@ -3,28 +3,41 @@ var dbConnection = require('../utils/dbUtil').connection;
 
 /**
  * Create a new model and add to your account
- * 
+ *
  *
  * body Model Model object that needs to be added to the account
  * no response value expected for this operation
  **/
 exports.createModel = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    // dbConnection.connect();
+    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType) VALUES (${body.userId}, "${body.modelName}", "${body.modelType}")`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results);
+      console.log(fields);
+      resolve();
+    });
+
+    // dbConnection.end();
   });
 }
 
 
 /**
  * Delete a model
- * 
+ *
  *
  * modelId Long Model id to delete
  * no response value expected for this operation
  **/
 exports.deleteModel = function(modelId) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    dbConnection.query(`DELETE FROM Model WHERE id = ${modelId}`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results);
+      console.log(fields);
+      resolve();
+    });
   });
 }
 
@@ -55,18 +68,18 @@ exports.getModelById = function(modelId) {
 
 /**
  * Retrieve all existing models for a user
- * 
+ *
  *
  * no response value expected for this operation
  **/
 exports.getModels = function() {
   return new Promise(function(resolve, reject) {
-    dbConnection.connect();
- 
+    // dbConnection.connect();
+
     // var createTable1 = 'CREATE TABLE User (id int AUTO_INCREMENT PRIMARY KEY,fullName varchar(50) NOT NULL,' +
     //                   'userName varchar(20) NOT NULL,password varchar(50) NOT NULL,email varchar(50) NOT NULL)';
 
-    // var createTable2 = 
+    // var createTable2 =
     // 'CREATE TABLE Model (                                            ' +
     // '  id int AUTO_INCREMENT PRIMARY KEY,                            ' +
     // '  userId int,                                                   ' +
@@ -87,21 +100,21 @@ exports.getModels = function() {
     //   if (error) throw error;
     //   console.log('The solution is: ', results[0]);
     // });
-       
+
     dbConnection.query('SELECT * FROM Model WHERE userId = 1', function (error, results, fields) {
       if (error) throw error;
-      console.log('The solution is: ', results[0]);
+      resolve(results);
     });
-     
-    dbConnection.end();    
-    resolve();
+
+    // dbConnection.end();
+
   });
 }
 
 
 /**
  * Updates a model
- * 
+ *
  *
  * modelId Long ID of model that needs to be updated
  * body Model Model object that needs to be updated
@@ -112,4 +125,3 @@ exports.updateModel = function(modelId,body) {
     resolve();
   });
 }
-

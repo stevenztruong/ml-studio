@@ -39,7 +39,7 @@ module.exports.getModelById = function getModelById (req, res, next) {
 module.exports.getModels = function getModels (req, res, next) {
   Models.getModels()
     .then(function (response) {
-      utils.writeJson(res, response);
+      res.end(JSON.stringify(response));
     })
     .catch(function (response) {
       utils.writeJson(res, response);

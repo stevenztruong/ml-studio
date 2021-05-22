@@ -364,17 +364,17 @@ definitions:
       username: "username"
   Model:
     type: "object"
+    required:
+    - userId
+    - modelName
     properties:
-      id:
-        type: "integer"
-        format: "int64"
-      name:
+      userId:
+        type: integer
+      modelName:
         type: "string"
         description: "Model's name"
+      modelType:
+        type: "string"
       params:
         type: "object"
         properties: {}
-    example:
-      name: "name"
-      id: 0
-      params: "{}"
