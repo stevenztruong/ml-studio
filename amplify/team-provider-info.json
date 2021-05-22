@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-mlstudio-dev-221549-authRole",
+      "UnauthRoleArn": "arn:aws:iam::038619624218:role/amplify-mlstudio-dev-221549-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::038619624218:role/amplify-mlstudio-dev-221549-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-mlstudio-dev-221549-deployment",
+      "UnauthRoleName": "amplify-mlstudio-dev-221549-unauthRole",
+      "StackName": "amplify-mlstudio-dev-221549",
+      "StackId": "arn:aws:cloudformation:us-west-2:038619624218:stack/amplify-mlstudio-dev-221549/c79faac0-babc-11eb-a3b2-023fb3d3a5bd",
+      "AmplifyAppId": "d2k67pfcdtyalz"
+    }
+  }
+}
