@@ -1,5 +1,5 @@
 'use strict';
-
+var dbConnection = require('../utils/dbUtil').connection;
 
 /**
  * Create a new model and add to your account
@@ -61,6 +61,39 @@ exports.getModelById = function(modelId) {
  **/
 exports.getModels = function() {
   return new Promise(function(resolve, reject) {
+    dbConnection.connect();
+ 
+    // var createTable1 = 'CREATE TABLE User (id int AUTO_INCREMENT PRIMARY KEY,fullName varchar(50) NOT NULL,' +
+    //                   'userName varchar(20) NOT NULL,password varchar(50) NOT NULL,email varchar(50) NOT NULL)';
+
+    // var createTable2 = 
+    // 'CREATE TABLE Model (                                            ' +
+    // '  id int AUTO_INCREMENT PRIMARY KEY,                            ' +
+    // '  userId int,                                                   ' +
+    // '  FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,   ' +
+    // '  modelName varchar(20) NOT NULL,                               ' +
+    // '  modelType varchar(10) NOT NULL,                               ' +
+    // '  status varchar(10) DEFAULT "Unknown",                         ' +
+    // '  parms text                                                    ' +
+    // ')                                                               ';
+
+
+    // connection.query("SELECT * FROM Model", function (error, results, fields) {
+    //   if (error) throw error;
+    //   console.log('The solution is: ', results[0]);
+    // });
+
+    // dbConnection.query(createTable, function (error, results, fields) {
+    //   if (error) throw error;
+    //   console.log('The solution is: ', results[0]);
+    // });
+       
+    dbConnection.query('SELECT * FROM Model WHERE userId = 1', function (error, results, fields) {
+      if (error) throw error;
+      console.log('The solution is: ', results[0]);
+    });
+     
+    dbConnection.end();    
     resolve();
   });
 }
