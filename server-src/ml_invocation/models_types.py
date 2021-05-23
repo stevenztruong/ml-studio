@@ -1,0 +1,2 @@
+TEST  = 'test'
+SVM = 'svm'
