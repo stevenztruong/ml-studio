@@ -16,7 +16,7 @@ export default class AddModel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedModel: 'knn'
+      selectedModel: 'svm'
     };
   }
 
@@ -56,8 +56,8 @@ export default class AddModel extends React.Component {
               <FormControl component="fieldset">
                 <FormLabel component="legend">Select a model:</FormLabel>
                 <RadioGroup aria-label="model" name="model" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
-                  <FormControlLabel value="knn" control={<Radio />} label="KNN" />
-                  <FormControlLabel value="svm" control={<Radio />} label="SVM" disabled />
+                  <FormControlLabel value="svm" control={<Radio />} label="SVM" />
+                  <FormControlLabel value="knn" control={<Radio />} label="KNN" disabled />
                 </RadioGroup>
               </FormControl>
             </Card>
