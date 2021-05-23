@@ -1,4 +1,5 @@
 import React from 'react';
+import NavBar from './NavBar';
 
 export default class ViewModels extends React.Component {
   constructor(props) {
@@ -12,7 +13,10 @@ export default class ViewModels extends React.Component {
 
   render() {
     return (
-      <h1>View Model Page</h1>
+      <div>
+        <NavBar />
+        <h1>View Model Page</h1>
+      </div>
     );
   }
 }

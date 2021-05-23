@@ -27,6 +27,11 @@ class NavBar extends React.Component {
             ML Studio
           </Button>
           </Grid>
+          <Grid container justify="flex-end">
+          <Button style={{marginLeft: "10px"}} onClick={() => { window.location = '/addmodel' }}>
+            Add Model
+          </Button>
+          </Grid>
         </Toolbar >
       </AppBar >
     );
