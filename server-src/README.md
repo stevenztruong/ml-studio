@@ -3,6 +3,14 @@
 ## Overview
 TBD
 
+
+### Setting ML Layer
+
+* Install python 3.8
+
+* pip install -U scikit-learn
+
+
 ### Running the server
 To run the server, run:
 
