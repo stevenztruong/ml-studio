@@ -13,10 +13,43 @@ tags:
   description: "Everything about your Models"
 - name: "users"
   description: "Users"
+- name: "data"
+  description: "Data for your models"
 schemes:
 - "https"
 - "http"
 paths:
+  /data:
+    post:
+      tags:
+      - "data"
+      summary: "Upload data for model"
+      description: ""
+      operationId: "uploadData"
+      consumes:
+      - multipart/form-data
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: formData
+        name: trainingData
+        type: file
+        required: false
+        description: The file to upload.
+      - in: formData
+        name: classificationData
+        type: file
+        required: false
+        description: The file to upload.
+      responses:
+        "201":
+          description: "Created"
+        "400":
+          description: "Bad Request"
+        "401":
+          description: "Unauthorized"
+      x-swagger-router-controller: "Models"
   /models:
     get:
       tags:

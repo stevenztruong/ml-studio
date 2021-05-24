@@ -1,4 +1,7 @@
 'use strict';
+
+const formidable = require('formidable');
+
 var dbConnection = require('../utils/dbUtil').connection;
 
 /**
@@ -123,6 +126,13 @@ exports.getModels = function() {
  **/
 exports.updateModel = function(modelId,body) {
   return new Promise(function(resolve, reject) {
+    resolve();
+  });
+}
+
+exports.uploadData = function(req,body) {
+  return new Promise(function(resolve, reject) {
+    console.log(req.files);
     resolve();
   });
 }
