@@ -139,11 +139,9 @@ exports.uploadData = function(req,body) {
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
     Bucket: BUCKET_NAME
-  });  
+  });
   return new Promise(function(resolve, reject) {
-    console.log(files);
     lo.forEach(files, function(value, key) {
-      console.log(value);
       s3bucket.createBucket(function () {
         var params = {
           Bucket: BUCKET_NAME,
@@ -158,9 +156,12 @@ exports.uploadData = function(req,body) {
           console.log('success');
           console.log(data);
         });
-      });    
-    });  
+      });
+    });
 
-    resolve();
+    resolve({
+      trainging_data: files.trainingData.name,
+      classification_data: files.classificationData.name
+    });
   });
 }
