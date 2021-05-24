@@ -1,7 +1,7 @@
 'use strict';
 
-var utils = require('../utils/writer.js');
-var Models = require('../service/ModelsService');
+const utils = require('../utils/writer.js');
+const Models = require('../service/ModelsService');
 
 module.exports.createModel = function createModel (req, res, next) {
   var body = req.swagger.params['body'].value;
@@ -50,6 +50,17 @@ module.exports.updateModelById = function updateModel (req, res, next) {
   var modelId = req.swagger.params['modelId'].value;
   var body = req.swagger.params['body'].value;
   Models.updateModel(modelId,body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.uploadData = function uploadData (req, res, next) {
+
+  Models.uploadData(req)
     .then(function (response) {
       utils.writeJson(res, response);
     })

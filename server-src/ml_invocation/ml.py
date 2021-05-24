@@ -1,6 +1,7 @@
 import models_types
 import sys
-
+import os
+sys.path.append(os.getcwd()+'/ml_invocation/models')
 sys.path.append('models')
 
 from svm import handleSVM

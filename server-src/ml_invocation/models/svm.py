@@ -4,6 +4,7 @@ import json
 
 import command_types
 import utilities
+import s3Util
 
 def handleSVM(command, trainingData, classificationData, parameters):
     if(command == command_types.CREATE_MODEL):
@@ -12,9 +13,10 @@ def handleSVM(command, trainingData, classificationData, parameters):
 def createModel(trainingData, classificationData, parameters):
     try:
         classifer = svm.SVC(gamma = "auto")
-        trainingDataSet = utilities.getFileContents(trainingData)
-        classificationDataSet = utilities.getFileContents(classificationData)
-
+        # trainingDataSet = utilities.getFileContents(trainingData)
+        # classificationDataSet = utilities.getFileContents(classificationData)
+        trainingDataSet = json.loads(s3Util.getFile(trainingData))
+        classificationDataSet = json.loads(s3Util.getFile(classificationData))
         res = classifer.fit(trainingDataSet, classificationDataSet)
         # print("score: " + str(classifer.predict(trainingDataSet)))
         print("success")

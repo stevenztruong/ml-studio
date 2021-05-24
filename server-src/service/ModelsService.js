@@ -1,4 +1,11 @@
 'use strict';
+
+const { spawn } = require('child_process');
+const lo = require('lodash');
+const AWS = require('aws-sdk');
+const BUCKET_NAME = 'mlstudio-bucket';
+const IAM_USER_KEY = 'AKIAQR7PIWMNIAGTK2H3';
+const IAM_USER_SECRET = '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';
 var dbConnection = require('../utils/dbUtil').connection;
 
 /**
@@ -16,6 +23,18 @@ exports.createModel = function(body) {
       if (error) throw error;
       console.log(results);
       console.log(fields);
+      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", "svm", body.trainingData, body.classificationData]);
+      childPython.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`);
+      })
+      
+      childPython.stderr.on('data', (data) => {
+          console.error(`stderr: ${data}`);
+      })
+      
+      childPython.on('close', (code) => {
+          console.log(`child process exited with code: ${code}`);
+      })
       resolve();
     });
 
@@ -124,5 +143,38 @@ exports.getModels = function() {
 exports.updateModel = function(modelId,body) {
   return new Promise(function(resolve, reject) {
     resolve();
+  });
+}
+
+exports.uploadData = function(req,body) {
+  const files = req.files;
+  const s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET,
+    Bucket: BUCKET_NAME
+  });
+  return new Promise(function(resolve, reject) {
+    lo.forEach(files, function(value, key) {
+      s3bucket.createBucket(function () {
+        var params = {
+          Bucket: BUCKET_NAME,
+          Key: value.name,
+          Body: value.data
+        };
+        s3bucket.upload(params, function (err, data) {
+          if (err) {
+            console.log('error in callback');
+            console.log(err);
+          }
+          console.log('success');
+          console.log(data);
+        });
+      });
+    });
+
+    resolve({
+      trainging_data: files.trainingData.name,
+      classification_data: files.classificationData.name
+    });
   });
 }
