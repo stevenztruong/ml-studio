@@ -13,11 +13,13 @@
   "license": "Unlicense",
   "private": true,
   "dependencies": {
+    "aws-sdk": "*",
     "connect": "^3.2.0",
-    "js-yaml": "^3.3.0",
-    "mysql": "*",
-    "formidable": "*",
     "express-fileupload": "*",
+    "formidable": "*",
+    "js-yaml": "^3.3.0",
+    "lodash": "*",
+    "mysql": "*",
     "swagger-tools": "0.10.1"
   }
 }
