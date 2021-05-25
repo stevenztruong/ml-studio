@@ -173,7 +173,7 @@ exports.uploadData = function(req,body) {
     });
 
     resolve({
-      trainging_data: files.trainingData.name,
+      training_data: files.trainingData.name,
       classification_data: files.classificationData.name
     });
   });

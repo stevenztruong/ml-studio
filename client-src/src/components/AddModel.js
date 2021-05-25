@@ -35,12 +35,12 @@ export default class AddModel extends React.Component {
     form_data.append('classificationData', this.state.classificationData)
 
     await axios.post(
-      process.env.REACT_APP_BACKEND_API_URL + '/data',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
       form_data
     ).then(async res => {
       await this.createModelApiCall(
-        res.data.trainingData,
-        res.data.classificationData
+        res.data.training_data,
+        res.data.classification_data
       );
     }).catch(error => {
       alert(error);
@@ -49,8 +49,9 @@ export default class AddModel extends React.Component {
 
   createModelApiCall = async (trainingDataPath, classificationDataPath) => {
     await axios.post(
-      process.env.REACT_APP_BACKEND_API_URL + '/models',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
       {
+        userId: 1,
         modelType: this.state.selectedModel,
         parameters: {},
         trainingData: trainingDataPath,
