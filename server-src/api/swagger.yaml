@@ -193,7 +193,6 @@ paths:
         description: "Model id to delete"
         required: true
         type: "integer"
-        format: "int64"
       responses:
         "200":
           description: "Ok"
