@@ -15,6 +15,7 @@
   "dependencies": {
     "aws-sdk": "*",
     "connect": "^3.2.0",
+    "cors": "*",
     "express-fileupload": "*",
     "formidable": "*",
     "js-yaml": "^3.3.0",

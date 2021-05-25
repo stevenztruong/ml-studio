@@ -5,6 +5,7 @@ var fs = require('fs'),
     http = require('http');
 
 var app = require('connect')();
+var cors = require('cors');
 var swaggerTools = require('swagger-tools');
 var jsyaml = require('js-yaml');
 const fileUpload = require('express-fileupload');
@@ -18,6 +19,7 @@ var options = {
 };
 
 app.use(fileUpload());
+app.use(cors());
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
 var spec = fs.readFileSync(path.join(__dirname,'api/swagger.yaml'), 'utf8');
