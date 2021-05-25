@@ -23,15 +23,15 @@ exports.createModel = function(body) {
       if (error) throw error;
       console.log(results);
       console.log(fields);
-      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", "svm", body.trainingData, body.classificationData]);
+      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", "svm", body.trainingData, body.classificationData, body.modelName]);
       childPython.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
       })
-      
+
       childPython.stderr.on('data', (data) => {
           console.error(`stderr: ${data}`);
       })
-      
+
       childPython.on('close', (code) => {
           console.log(`child process exited with code: ${code}`);
       })

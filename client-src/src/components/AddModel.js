@@ -35,7 +35,7 @@ export default class AddModel extends React.Component {
     form_data.append('classificationData', this.state.classificationData)
 
     await axios.post(
-      process.env.REACT_APP_BACKEND_API_URL + '/uploadData',
+      process.env.REACT_APP_BACKEND_API_URL + '/data',
       form_data
     ).then(async res => {
       await this.createModelApiCall(
