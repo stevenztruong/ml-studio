@@ -2,6 +2,8 @@
 
 * pip3 install -U scikit-learn
 
+* pip3 install -U boto3
+
 ## Running the code
 
 
