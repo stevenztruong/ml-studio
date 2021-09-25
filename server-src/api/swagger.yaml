@@ -228,7 +228,7 @@ paths:
         default:
           description: "successful operation"
       x-swagger-router-controller: "Users"
-  /users/login:
+  /login:
     get:
       tags:
       - "users"
@@ -266,7 +266,7 @@ paths:
         "400":
           description: "Invalid username/password supplied"
       x-swagger-router-controller: "Users"
-  /users/logout:
+  /logout:
     get:
       tags:
       - "users"

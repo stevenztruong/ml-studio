@@ -70,16 +70,16 @@ exports.getUserByName = function(username) {
  **/
 exports.loginUser = function(username,password) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = "";
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    dbConnection.query(`SELECT * from User where userName="${username}"`, function (error, results, fields) {
+      console.log(error);
+      if (error) throw error;
+      var user = results[0];
+      if (results.length < 1 || user.password !== password) resolve({"status":"Unauthenticated","statusCode":401});
+      console.log(results);
+      resolve({"status":"Authenticated","statusCode":200});
+    });    
   });
 }
-
 
 /**
  * Logs out current logged in user session

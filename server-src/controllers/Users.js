@@ -41,7 +41,8 @@ module.exports.loginUser = function loginUser (req, res, next) {
   var password = req.swagger.params['password'].value;
   Users.loginUser(username,password)
     .then(function (response) {
-      utils.writeJson(res, response);
+      res.statusCode = response.statusCode;
+      res.end(JSON.stringify(response));
     })
     .catch(function (response) {
       utils.writeJson(res, response);
