@@ -1,5 +1,6 @@
 'use strict';
 
+var dbConnection = require('../utils/dbUtil').connection;
 
 /**
  * Create user
@@ -10,7 +11,15 @@
  **/
 exports.createUser = function(body) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    console.log(body.username);
+    // dbConnection.connect();
+    dbConnection.query(`INSERT INTO User (fullName, userName, password, email) VALUES ("${body.fullName}", "${body.username}", "${body.password}", "${body.email}")`, function (error, results, fields) {
+      if (error) throw error;
+      console.log(results);
+      resolve();
+    });
+
+    // dbConnection.end();
   });
 }
 
@@ -31,35 +40,29 @@ exports.deleteUser = function(username) {
 
 /**
  * Get user by user name
- * 
  *
- * username String The name that needs to be fetched. Use user1 for testing. 
+ *
+ * username String The name that needs to be fetched. Use user1 for testing.
  * returns User
  **/
 exports.getUserByName = function(username) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "firstName" : "firstName",
-  "lastName" : "lastName",
-  "password" : "password",
-  "userStatus" : 6,
-  "id" : 0,
-  "email" : "email",
-  "username" : "username"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    // dbConnection.connect();
+    dbConnection.query(`SELECT * from User where userName="${username}"`, function (error, results, fields) {
+      console.log(error);
+      if (error) throw error;
+      console.log(results);
+      resolve(results);
+    });
+
+    // dbConnection.end();
   });
 }
 
 
 /**
  * Logs user into the system
- * 
+ *
  *
  * username String The user name for login
  * password String The password for login in clear text
@@ -80,7 +83,7 @@ exports.loginUser = function(username,password) {
 
 /**
  * Logs out current logged in user session
- * 
+ *
  *
  * no response value expected for this operation
  **/
@@ -104,4 +107,3 @@ exports.updateUser = function(username,body) {
     resolve();
   });
 }
-

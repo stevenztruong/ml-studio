@@ -29,7 +29,7 @@ module.exports.getUserByName = function getUserByName (req, res, next) {
   var username = req.swagger.params['username'].value;
   Users.getUserByName(username)
     .then(function (response) {
-      utils.writeJson(res, response);
+      res.end(JSON.stringify(response));
     })
     .catch(function (response) {
       utils.writeJson(res, response);

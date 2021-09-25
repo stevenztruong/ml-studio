@@ -367,32 +367,20 @@ definitions:
   User:
     type: "object"
     properties:
-      id:
-        type: "integer"
-        format: "int64"
       username:
         type: "string"
-      firstName:
-        type: "string"
-      lastName:
+      fullName:
         type: "string"
       email:
         type: "string"
       password:
         type: "string"
-      userStatus:
-        type: "integer"
-        format: "int32"
-        description: "User Status"
     xml:
       name: "User"
     example:
-      firstName: "firstName"
-      lastName: "lastName"
+      fullName: "firstName lastName"
       password: "password"
-      userStatus: 6
-      id: 0
-      email: "email"
+      email: "email@gmail.com"
       username: "username"
   Model:
     type: "object"
