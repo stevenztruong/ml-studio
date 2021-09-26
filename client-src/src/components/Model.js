@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-  FormControlLabel,
   FormControl,
   FormLabel,
   RadioGroup,
-  Radio,
+  Backdrop,
+  CircularProgress,
   Card,
   Button,
   TextField
@@ -18,7 +18,8 @@ export default class AddModel extends React.Component {
     super(props);
     this.state = {
       selectedModel: 'svm',
-      modelName: ""
+      modelName: "",
+      showLoading: false
     };
   }
 
@@ -142,6 +143,18 @@ export default class AddModel extends React.Component {
     )
   }
 
+  handleDownload = () => {
+    this.setState({showLoading: true});
+  }
+
+  handleDelete = () => {
+    this.setState({showLoading: true});
+  }
+
+  handleDeploy = () => {
+    this.setState({showLoading: true});
+  }
+
   render() {
     return (
       <div>
@@ -175,10 +188,16 @@ export default class AddModel extends React.Component {
           </div>
         </div>
         <div style={{ padding: "2%" }}>
-          <Button onClick={() => { }}>Download</Button>
-          <Button onClick={() => { }}>Delete</Button>
-          <Button onClick={() => { }}>Deploy</Button>
+          <Button onClick={this.handleDownload}>Download</Button>
+          <Button onClick={this.handleDelete}>Delete</Button>
+          <Button onClick={this.handleDeploy}>Deploy</Button>
         </div>
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={this.state.showLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     );
   }
