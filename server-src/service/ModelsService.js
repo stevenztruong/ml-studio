@@ -23,7 +23,7 @@ exports.createModel = function(body) {
       if (error) throw error;
       console.log(results);
       console.log(fields);
-      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", "svm", body.trainingData, body.classificationData, body.modelName]);
+      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", body.modelType, body.trainingData, body.classificationData, body.modelName]);
       childPython.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
       })

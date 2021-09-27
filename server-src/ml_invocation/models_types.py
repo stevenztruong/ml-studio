@@ -1,2 +1,7 @@
 TEST  = 'test'
-SVM = 'svm'
+SVM = 'SVM'
+KNN = 'KNN'
+GAUSSIAN_NB = 'Gaussian Naive Bayes'
+MULTINOMIAL_NB ='Multinomial Naive Bayes'
+DECISION_TREE_CLASSIFIER = 'Decision Tree Classifier'
+MULTI_LAYER_PERCEPTRON_CLASSIFIER = 'Multi-layer Perceptron Classifier'
