@@ -1,4 +1,4 @@
-from sklearn import svm
+from sklearn import neighbors
 
 import json
 
@@ -6,14 +6,14 @@ import command_types
 import utilities
 import s3Util
 
-def handleSVM(command, trainingData, classificationData, modelName, parameters):
+def handleKNN(command, trainingData, classificationData, modelName, parameters):
     if(command == command_types.CREATE_MODEL):
         return createModel(trainingData, classificationData, modelName, parameters)
 
 def createModel(trainingData, classificationData, modelName, parameters):
     try:
-        classifer = svm.SVC(gamma = "auto")
-        print("Created SVM classifier")
+        classifer = neighbors.KNeighborsClassifier()
+        print("Created KNN classifier")
         # The commented lines for trainingDataSet and classificationDataSet
         # are used for retrieving the files locally for TESTING purposes only
 

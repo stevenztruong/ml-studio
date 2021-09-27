@@ -17,7 +17,7 @@ export default class AddModel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedModel: 'svm',
+      selectedModel: 'SVM',
       modelName: ""
     };
   }
@@ -93,11 +93,26 @@ export default class AddModel extends React.Component {
   }
 
   renderModelParameters = () => {
-    if (this.state.selectedModel === 'svm') {
+    if (this.state.selectedModel === 'SVM') {
       return this.renderSvmParameters();
     }
-    else if (this.state.selectedModel === 'knn') {
+    else if (this.state.selectedModel === 'Gaussian Naive Bayes') {
+      return this.renderGaussianNBParameters();
+    }
+    else if (this.state.selectedModel === 'Multinomial Naive Bayes') {
+      return this.renderMultinomialNBParameters();
+    }
+    else if (this.state.selectedModel === 'Decision Tree Classifier') {
+      return this.renderDecisionTreeClassifierParameters();
+    }
+    else if (this.state.selectedModel === 'Multi-layer Perceptron Classifier') {
+      return this.renderMLPClassifierParameters();
+    }
+    else if (this.state.selectedModel === 'KNN') {
       return this.renderKnnParameters();
+    }
+    else {
+      return <div/>;
     }
   }
 
@@ -114,15 +129,40 @@ export default class AddModel extends React.Component {
     )
   }
 
+  renderGaussianNBParameters = () => {
+    return (
+      <div style={{ padding: "2%" }}>
+      </div>
+    )
+  }
+
+  renderMultinomialNBParameters = () => {
+    return (
+      <div style={{ padding: "2%" }}>
+
+      </div>
+    )
+  }
+
+  renderDecisionTreeClassifierParameters = () => {
+    return (
+      <div style={{ padding: "2%" }}>
+
+      </div>
+    )
+  }
+
+  renderMLPClassifierParameters = () => {
+    return (
+      <div style={{ padding: "2%" }}>
+
+      </div>
+    )
+  }
+
   renderKnnParameters = () => {
     return (
       <div style={{ padding: "2%" }}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Model Parameters</FormLabel>
-          <RadioGroup aria-label="parameters" name="parameters" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
-            <TextField disabled label="Layers" variant="outlined" style={{ padding: "2%" }} value={this.state.knnLayers} onChange={(e) => this.setState({ knnLayers: e.target.value })} />
-          </RadioGroup>
-        </FormControl>
       </div>
     )
   }
@@ -137,8 +177,12 @@ export default class AddModel extends React.Component {
               <FormControl component="fieldset">
                 <FormLabel component="legend">Select a model:</FormLabel>
                 <RadioGroup aria-label="model" name="model" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
-                  <FormControlLabel value="svm" control={<Radio />} label="SVM" />
-                  <FormControlLabel value="knn" control={<Radio />} label="KNN" disabled />
+                  <FormControlLabel value="SVM" control={<Radio />} label="SVM" />
+                  <FormControlLabel value="Gaussian Naive Bayes" control={<Radio />} label="Gaussian Naive Bayes" />
+                  <FormControlLabel value="Multinomial Naive Bayes" control={<Radio />} label="Multinomial Naive Bayes" />
+                  <FormControlLabel value="Decision Tree Classifier" control={<Radio />} label="Decision Tree Classifier" />
+                  <FormControlLabel value="Multi-layer Perceptron Classifier" control={<Radio />} label="Multi-layer Perceptron Classifier" />
+                  <FormControlLabel value="KNN" control={<Radio />} label="KNN" />
                 </RadioGroup>
               </FormControl>
             </Card>
