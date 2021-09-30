@@ -15,10 +15,12 @@
   "dependencies": {
     "aws-sdk": "*",
     "connect": "^3.2.0",
+    "cookie": "*",
     "cors": "*",
     "express-fileupload": "*",
     "formidable": "*",
     "js-yaml": "^3.3.0",
+    "jsonwebtoken": "*",
     "lodash": "*",
     "mysql": "*",
     "swagger-tools": "0.10.1"

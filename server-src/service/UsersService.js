@@ -1,6 +1,7 @@
 'use strict';
 
 var dbConnection = require('../utils/dbUtil').connection;
+const authUtils = require('../utils/authUtils');
 
 /**
  * Create user
@@ -75,9 +76,21 @@ exports.loginUser = function(username,password) {
       if (error) throw error;
       var user = results[0];
       if (results.length < 1 || user.password !== password) resolve({"status":"Unauthenticated","statusCode":401});
-      console.log(results);
-      resolve({"status":"Authenticated","statusCode":200});
-    });    
+      user.sub = user.username;
+      delete user.password;
+
+      const jwtPayload = {
+        id: user.id,
+        fullName: user.fullName,
+        username: user.userName,
+        email: user.email,
+        sub: user.userName
+      };
+      //generate token with user's profile
+      const token = authUtils.generateToken(jwtPayload);
+
+      resolve({"status":"Authenticated","statusCode":200,"accessToken": token});
+    });
   });
 }
 

@@ -240,12 +240,12 @@ paths:
       - "application/json"
       parameters:
       - name: "username"
-        in: "query"
+        in: "header"
         description: "The user name for login"
         required: true
         type: "string"
       - name: "password"
-        in: "query"
+        in: "header"
         description: "The password for login in clear text"
         required: true
         type: "string"

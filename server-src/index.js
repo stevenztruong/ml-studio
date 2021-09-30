@@ -11,6 +11,8 @@ var jsyaml = require('js-yaml');
 const fileUpload = require('express-fileupload');
 var serverPort = 9090;
 
+const authUtils = require('./utils/authUtils');
+
 // swaggerRouter configuration
 var options = {
   swaggerUi: path.join(__dirname, '/swagger.json'),
@@ -20,6 +22,9 @@ var options = {
 
 app.use(fileUpload());
 app.use(cors());
+
+// Checking token and loading user's profile
+app.use(authUtils.fetchUserInfo);
 
 // The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
 var spec = fs.readFileSync(path.join(__dirname,'api/swagger.yaml'), 'utf8');
