@@ -16,7 +16,7 @@ exports.createUser = function(body) {
     // dbConnection.connect();
     dbConnection.query(`INSERT INTO User (fullName, userName, password, email) VALUES ("${body.fullName}", "${body.username}", "${body.password}", "${body.email}")`, function (error, results, fields) {
       console.log(error);
-      if (error) resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
+      if (error) resolve({"status":error.code,"message":error.sqlMessage,"statusCode":409});
       resolve();
     });
 

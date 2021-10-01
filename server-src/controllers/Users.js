@@ -7,7 +7,8 @@ module.exports.createUser = function createUser (req, res, next) {
   var body = req.swagger.params['body'].value;
   Users.createUser(body)
     .then(function (response) {
-      utils.writeJson(res, response);
+      res.statusCode = response.statusCode;
+      res.end(JSON.stringify(response));      
     })
     .catch(function (response) {
       utils.writeJson(res, response);
