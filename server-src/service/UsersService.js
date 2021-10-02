@@ -81,7 +81,7 @@ exports.loginUser = function(username,password) {
       console.log(error);
       if (error) throw error;
       var user = results[0];
-      if (results.length < 1 || user.password !== password) resolve({"status":"Unauthenticated","statusCode":401});
+      if (results.length < 1 || user.password !== password) return resolve({"status":"Unauthenticated","statusCode":401});
       user.sub = user.username;
       delete user.password;
 

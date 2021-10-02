@@ -4,10 +4,10 @@ import {
   CircularProgress,
   Card,
   Button,
-  TextField
+  TextField,
+  Grid
 } from '@material-ui/core';
 
-import NavBar from './NavBar';
 import axios from 'axios';
 
 export default class CreateAccount extends React.Component {
@@ -49,52 +49,64 @@ export default class CreateAccount extends React.Component {
     return (
       <div>
         <div>
-          <NavBar />
-          <Card style={{ width: '30%', padding: "2%" }}>
-            <div style={{ padding: "10px" }}>
-              <TextField
-                style={{ width: '80%' }}
-                id="fullname"
-                onChange={(e) => { this.setState({ fullName: e.target.value }) }}
-                label="Full name"
-                variant="outlined"
-                value={this.state.fullName}
-              />
-            </div>
-            <div style={{ padding: "10px" }}>
-              <TextField
-                style={{ width: '80%' }}
-                id="email"
-                onChange={(e) => { this.setState({ email: e.target.value }) }}
-                label="Email"
-                variant="outlined"
-                value={this.state.email}
-                type="email"
-              />
-            </div>
-            <div style={{ padding: "10px" }}>
-              <TextField
-                style={{ width: '80%' }}
-                id="username"
-                onChange={(e) => { this.setState({ username: e.target.value }) }}
-                label="Username"
-                variant="outlined"
-                value={this.state.username}
-              />
-            </div>
-            <div style={{ padding: "10px" }}>
-              <TextField
-                style={{ width: '80%' }}
-                id="password"
-                onChange={(e) => { this.setState({ password: e.target.value }) }}
-                label="Password"
-                variant="outlined"
-                value={this.state.password}
-                type="password"
-              />
-            </div>
-            <Button onClick={this.onCreateAccount}>Create Account</Button>
-          </Card>
+
+          <Grid
+              container
+              spacing={0}
+              direction="column"
+              alignItems="center"
+              justify="center"
+              style={{ minHeight: '100vh' }}
+              
+            >  
+            <h1>Online Machine Learning Studio</h1>
+            <Card style={{ width: '30%', padding: "2%" }}>
+              <h2 style={{ padding: "10px" }}>CREATE ACCOUNT</h2>
+              <div style={{ padding: "10px" }}>
+                <TextField
+                  style={{ width: '80%' }}
+                  id="fullname"
+                  onChange={(e) => { this.setState({ fullName: e.target.value }) }}
+                  label="Full name"
+                  variant="outlined"
+                  value={this.state.fullName}
+                />
+              </div>
+              <div style={{ padding: "10px" }}>
+                <TextField
+                  style={{ width: '80%' }}
+                  id="email"
+                  onChange={(e) => { this.setState({ email: e.target.value }) }}
+                  label="Email"
+                  variant="outlined"
+                  value={this.state.email}
+                  type="email"
+                />
+              </div>
+              <div style={{ padding: "10px" }}>
+                <TextField
+                  style={{ width: '80%' }}
+                  id="username"
+                  onChange={(e) => { this.setState({ username: e.target.value }) }}
+                  label="Username"
+                  variant="outlined"
+                  value={this.state.username}
+                />
+              </div>
+              <div style={{ padding: "10px" }}>
+                <TextField
+                  style={{ width: '80%' }}
+                  id="password"
+                  onChange={(e) => { this.setState({ password: e.target.value }) }}
+                  label="Password"
+                  variant="outlined"
+                  value={this.state.password}
+                  type="password"
+                />
+              </div>
+              <Button onClick={this.onCreateAccount}>Create Account</Button>
+            </Card>
+          </Grid>
         </div>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
