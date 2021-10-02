@@ -34,7 +34,11 @@ exports.createUser = function(body) {
  **/
 exports.deleteUser = function(username) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    dbConnection.query(`DELETE from User WHERE username="${username}"`, function (error, results, fields) {
+      console.log(error);
+      if (error) resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
+      resolve();
+    });
   });
 }
 
@@ -75,7 +79,7 @@ exports.loginUser = function(username,password) {
       console.log(error);
       if (error) throw error;
       var user = results[0];
-      if (results.length < 1 || user.password !== password) resolve({"status":"Unauthenticated","statusCode":401});
+      if (results.length < 1 || user.password !== password) return resolve({"status":"Unauthenticated","statusCode":401});
       user.sub = user.username;
       delete user.password;
 
