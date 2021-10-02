@@ -225,8 +225,10 @@ paths:
         schema:
           $ref: "#/definitions/User"
       responses:
-        default:
+        "200":
           description: "successful operation"
+        "409":
+          description: "user duplicate"
       x-swagger-router-controller: "Users"
   /login:
     get:

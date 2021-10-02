@@ -16,7 +16,7 @@ exports.createUser = function(body) {
     // dbConnection.connect();
     dbConnection.query(`INSERT INTO User (fullName, userName, password, email) VALUES ("${body.fullName}", "${body.username}", "${body.password}", "${body.email}")`, function (error, results, fields) {
       console.log(error);
-      if (error) resolve({"status":error.code,"message":error.sqlMessage,"statusCode":409});
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":409});
       resolve();
     });
 
@@ -34,7 +34,13 @@ exports.createUser = function(body) {
  **/
 exports.deleteUser = function(username) {
   return new Promise(function(resolve, reject) {
-    resolve();
+    console.log(username);
+    // dbConnection.connect();
+    dbConnection.query(`DELETE FROM User WHERE userName = "${username}"`, function (error, results, fields) {
+      console.log(error);
+      if (results.affectedRows == 0) return resolve({"status":"User not found","statusCode":404})
+      resolve();
+    });
   });
 }
 

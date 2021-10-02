@@ -19,7 +19,8 @@ module.exports.deleteUser = function deleteUser (req, res, next) {
   var username = req.swagger.params['username'].value;
   Users.deleteUser(username)
     .then(function (response) {
-      utils.writeJson(res, response);
+      res.statusCode = response.statusCode;
+      res.end(JSON.stringify(response));  
     })
     .catch(function (response) {
       utils.writeJson(res, response);
