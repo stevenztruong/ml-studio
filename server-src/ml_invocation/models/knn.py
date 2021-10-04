@@ -12,7 +12,9 @@ def handleKNN(command, inputData, classificationData, modelName, parameters):
     elif(command == command_types.TRAIN_MODEL):
         return trainModel(inputData, classificationData, modelName, parameters)
     elif(command == command_types.TEST_MODEL):
-        return trainModel(inputData, classificationData, modelName, parameters)
+        return testModel(inputData, classificationData, modelName, parameters)
+    elif(command == command_types.PREDICT_MODEL):
+        return predictModel(inputData, modelName, None)
     else:
         return(json.dumps({'result': 'error', 'message': "Invalid command. Please use a valid command type."}))
 
@@ -72,7 +74,7 @@ def testModel(testingData, classificationData, modelName, parameters):
         # trainingDataSet = utilities.getFileContents(trainingData)
         # classificationDataSet = utilities.getFileContents(classificationData)
 
-        print("Fetching training and classification data")
+        print("Fetching testing and classification data")
         testingDataSet = json.loads(s3Util.getFile(testingData))
         classificationDataSet = json.loads(s3Util.getFile(classificationData))
         print("Testing KNN model")
@@ -88,7 +90,33 @@ def testModel(testingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+def predictModel(predictionData, modelName, parameters):
+    try:
+        classifer = utilities.getModel(modelName)
+        print("Fetched stored KNN classifier")
+        # The commented lines for trainingDataSet and classificationDataSet
+        # are used for retrieving the files locally for TESTING purposes only
+
+        # trainingDataSet = utilities.getFileContents(trainingData)
+        # classificationDataSet = utilities.getFileContents(classificationData)
+
+        print("Fetching prediction data")
+        predictionDataSet = json.loads(s3Util.getFile(predictionData))
+        print("Predicting dataset against KNN model")
+        res = classifer.predict(predictionDataSet)
+
+        print("Result: " + str(res))
+        print("success")
+
+        returnObject = json.dumps({'result': 'success', 'prediction': str(res)})
+        print("Return object: " + str(returnObject))
+        return(returnObject)
+    except Exception as e:
+        print("failure")
+        return(json.dumps({'result': 'error', 'message': str(e)}))
+
 if __name__ == '__main__':
     createModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
     trainModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
     testModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
+    predictModel("testTrainingData.json", "testModelName", None)
