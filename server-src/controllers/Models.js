@@ -2,8 +2,11 @@
 
 const utils = require('../utils/writer.js');
 const Models = require('../service/ModelsService');
+const DISABLE_AUTH = process.env.DISABLE_AUTH === 'true';
 
 module.exports.createModel = function createModel (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var body = req.swagger.params['body'].value;
   Models.createModel(body)
     .then(function (response) {
@@ -15,6 +18,8 @@ module.exports.createModel = function createModel (req, res, next) {
 };
 
 module.exports.deleteModel = function deleteModel (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var modelId = req.swagger.params['modelId'].value;
   Models.deleteModel(modelId)
     .then(function (response) {
@@ -26,6 +31,8 @@ module.exports.deleteModel = function deleteModel (req, res, next) {
 };
 
 module.exports.getModelById = function getModelById (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var modelId = req.swagger.params['modelId'].value;
   Models.getModelById(modelId)
     .then(function (response) {
@@ -37,6 +44,8 @@ module.exports.getModelById = function getModelById (req, res, next) {
 };
 
 module.exports.getModels = function getModels (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   Models.getModels()
     .then(function (response) {
       res.end(JSON.stringify(response));
@@ -47,6 +56,8 @@ module.exports.getModels = function getModels (req, res, next) {
 };
 
 module.exports.updateModelById = function updateModel (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var modelId = req.swagger.params['modelId'].value;
   var body = req.swagger.params['body'].value;
   Models.updateModel(modelId,body)
@@ -59,6 +70,7 @@ module.exports.updateModelById = function updateModel (req, res, next) {
 };
 
 module.exports.uploadData = function uploadData (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
 
   Models.uploadData(req)
     .then(function (response) {

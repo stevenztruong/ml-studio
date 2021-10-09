@@ -2,13 +2,14 @@
 
 var utils = require('../utils/writer.js');
 var Users = require('../service/UsersService');
+const DISABLE_AUTH = process.env.DISABLE_AUTH === 'true';
 
 module.exports.createUser = function createUser (req, res, next) {
   var body = req.swagger.params['body'].value;
   Users.createUser(body)
     .then(function (response) {
       res.statusCode = response.statusCode;
-      res.end(JSON.stringify(response));      
+      res.end(JSON.stringify(response));
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -16,11 +17,13 @@ module.exports.createUser = function createUser (req, res, next) {
 };
 
 module.exports.deleteUser = function deleteUser (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var username = req.swagger.params['username'].value;
   Users.deleteUser(username)
     .then(function (response) {
       res.statusCode = response.statusCode;
-      res.end(JSON.stringify(response));  
+      res.end(JSON.stringify(response));
     })
     .catch(function (response) {
       utils.writeJson(res, response);
@@ -28,6 +31,8 @@ module.exports.deleteUser = function deleteUser (req, res, next) {
 };
 
 module.exports.getUserByName = function getUserByName (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var username = req.swagger.params['username'].value;
   Users.getUserByName(username)
     .then(function (response) {
@@ -62,6 +67,8 @@ module.exports.logoutUser = function logoutUser (req, res, next) {
 };
 
 module.exports.updateUser = function updateUser (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
   var username = req.swagger.params['username'].value;
   var body = req.swagger.params['body'].value;
   Users.updateUser(username,body)
