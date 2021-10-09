@@ -17,7 +17,7 @@ module.exports.createUser = function createUser (req, res, next) {
 };
 
 module.exports.deleteUser = function deleteUser (req, res, next) {
-  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+  if (!DISABLE_AUTH && req.user.username !== 'superuser') return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
 
   var username = req.swagger.params['username'].value;
   Users.deleteUser(username)

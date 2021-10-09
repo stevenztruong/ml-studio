@@ -1,20 +1,23 @@
 import boto3
 import io
 import botocore
+import os
 from botocore.exceptions import NoCredentialsError
 # ACCESS_KEY_ID = 'AKIAQR7PIWMNIAGTK2H3'
 # ACCESS_SECRET_KEY = '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'
 # BUCKET_NAME = 'mlstudio-bucket'
 
 client = boto3.client(
-'s3', 
-aws_access_key_id='AKIAQR7PIWMNIAGTK2H3', 
+'s3',
+aws_access_key_id='AKIAQR7PIWMNIAGTK2H3',
 aws_secret_access_key='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'
 )
 
 def uploadFile(filePath, objName):
+    printf(os.getenv(userId))
+    printf('mlstudio-bucket/'+os.getenv(userId))
     try:
-        client.upload_file(filePath, 'mlstudio-bucket', objName)
+        client.upload_file(filePath, 'mlstudio-bucket/'+os.getenv(userId), objName)
         print("Upload Successful")
         return True
     except FileNotFoundError:
@@ -27,7 +30,9 @@ def uploadFile(filePath, objName):
 def getFile(objName):
     io_stream = io.BytesIO()
     try:
-        client.download_fileobj('mlstudio-bucket', objName, io_stream)
+        printf(os.getenv(userId))
+        printf('mlstudio-bucket/'+os.getenv(userId))
+        client.download_fileobj('mlstudio-bucket/'+os.getenv(userId), objName, io_stream)
         # seek back to the beginning of the file
         io_stream.seek(0)
         data = io_stream.read()

@@ -15,15 +15,15 @@ var dbConnection = require('../utils/dbUtil').connection;
  * body Model Model object that needs to be added to the account
  * no response value expected for this operation
  **/
-exports.createModel = function(body) {
+exports.createModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
     // dbConnection.connect();
-    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType) VALUES (${body.userId}, "${body.modelName}", "${body.modelType}")`, function (error, results, fields) {
+    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType) VALUES (${userId}, "${body.modelName}", "${body.modelType}")`, function (error, results, fields) {
       if (error) throw error;
       console.log(results);
       console.log(fields);
-      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", body.modelType, body.trainingData, body.classificationData, body.modelName]);
+      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", body.modelType, body.trainingData, body.classificationData, body.modelName], {env: {userId: userId}});
       childPython.stdout.on('data', (data) => {
           console.log(`stdout: ${data}`);
       })
@@ -42,6 +42,24 @@ exports.createModel = function(body) {
   });
 }
 
+exports.trainModel = function(userId, body) {
+  return new Promise(function(resolve, reject) {
+    console.log(body);
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "trainmodel", body.modelType, body.trainingData, body.classificationData, body.modelName],{env: {userId: userId}});
+    childPython.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    })
+
+    childPython.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    })
+
+    childPython.on('close', (code) => {
+        console.log(`child process exited with code: ${code}`);
+    })
+    resolve();
+  });
+}
 
 /**
  * Delete a model
@@ -92,7 +110,7 @@ exports.getModelById = function(modelId) {
  *
  * no response value expected for this operation
  **/
-exports.getModels = function() {
+exports.getModels = function(userId) {
   return new Promise(function(resolve, reject) {
     // dbConnection.connect();
 
@@ -121,7 +139,7 @@ exports.getModels = function() {
     //   console.log('The solution is: ', results[0]);
     // });
 
-    dbConnection.query('SELECT * FROM Model WHERE userId = 1', function (error, results, fields) {
+    dbConnection.query(`SELECT * FROM Model WHERE userId = ${userId}`, function (error, results, fields) {
       if (error) throw error;
       resolve(results);
     });
@@ -146,7 +164,7 @@ exports.updateModel = function(modelId,body) {
   });
 }
 
-exports.uploadData = function(req,body) {
+exports.uploadData = function(req) {
   const files = req.files;
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
@@ -157,7 +175,7 @@ exports.uploadData = function(req,body) {
     lo.forEach(files, function(value, key) {
       s3bucket.createBucket(function () {
         var params = {
-          Bucket: BUCKET_NAME,
+          Bucket: `${BUCKET_NAME}/${req.user.id}`, // ex. /mlstudio-bucket/56/
           Key: value.name,
           Body: value.data
         };
@@ -175,6 +193,32 @@ exports.uploadData = function(req,body) {
     resolve({
       training_data: files.trainingData.name,
       classification_data: files.classificationData.name
+    });
+  });
+}
+
+exports.downloadData = function(req) {
+  const s3bucket = new AWS.S3({
+    accessKeyId: IAM_USER_KEY,
+    secretAccessKey: IAM_USER_SECRET,
+    Bucket: BUCKET_NAME
+  });
+  return new Promise(function(resolve, reject) {
+    s3bucket.createBucket(function () {
+      var params = {
+        Bucket: `${BUCKET_NAME}/${req.user.id}`, // ex. /mlstudio-bucket/56/
+        Key: req.swagger.params['fileName'].value
+      };
+      s3bucket.getObject(params, function (err, data) {
+        if (err) {
+          console.log('error in callback');
+          console.log(err);
+          return resolve({"status":"Internal Server Error","statusCode":500});
+        }
+        console.log('success');
+        console.log(data);
+        return resolve({ File: data.body, statusCode: 200});
+      });
     });
   });
 }
