@@ -15,6 +15,9 @@ class NavBar extends React.Component {
   }
 
   componentDidMount = () => {
+    if (!sessionStorage.getItem('token')) {
+      window.location = '/login';
+    }
   }
 
 
@@ -23,14 +26,20 @@ class NavBar extends React.Component {
       <AppBar style={{ position: "sticky", backgroundColor: 'white' }}>
         <Toolbar>
           <Grid container justify="flex-start">
-          <Button style={{marginLeft: "10px"}} onClick={() => { window.location = '/' }}>
-            ML Studio
-          </Button>
+            <Button style={{ marginLeft: "10px" }} onClick={() => { window.location = '/' }}>
+              ML Studio
+            </Button>
           </Grid>
           <Grid container justify="flex-end">
-          <Button style={{marginLeft: "10px"}} onClick={() => { window.location = '/addmodel' }}>
-            Add Model
-          </Button>
+            <Button style={{ marginLeft: "10px" }} onClick={() => { window.location = '/addmodel' }}>
+              Add Model
+            </Button>
+            <Button style={{ marginLeft: "10px" }} onClick={() => {
+              sessionStorage.removeItem('token');
+              window.location = '/login';
+            }}>
+              Logout
+            </Button>
           </Grid>
         </Toolbar >
       </AppBar >

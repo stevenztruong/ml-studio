@@ -26,7 +26,12 @@ export default class ModelDashboard extends React.Component {
 
   getModelApiCall = async () => {
     await axios.get(
-      process.env.REACT_APP_BACKEND_API_URL + '/v1/models'
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      }
     ).then(res => {
       this.setState({ data: res.data })
     }).catch(error => {
