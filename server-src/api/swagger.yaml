@@ -131,7 +131,7 @@ paths:
         - "write:models"
         - "read:models"
       x-swagger-router-controller: "Models"
-  /models/{modelId}/training:
+  /training:
     post:
       tags:
       - "models"
@@ -151,12 +151,6 @@ paths:
         required: true
         schema:
           $ref: "#/definitions/Model"
-      - name: "modelId"
-        in: "path"
-        description: "ID of model to retrain"
-        required: true
-        type: "integer"
-        format: "int64"
       responses:
         "200":
           description: "Ok"

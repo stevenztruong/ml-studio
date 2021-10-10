@@ -10,8 +10,9 @@ def getFileContents(data):
         return json.loads(file.read())
 
 def storeModel(modelData, fileName):
-    pickledFileName = fileName + DOT_PICKLE_STRING
-    filePath = os.path.dirname(__file__) + "/models_storage/" + pickledFileName
+    if DOT_PICKLE_STRING not in fileName:
+      fileName = fileName + DOT_PICKLE_STRING
+    filePath = os.path.dirname(__file__) + "/models_storage/" + fileName
     pickle.dump(modelData, open(filePath, "wb" ))
     s3Util.uploadFile(filePath, fileName)
 

@@ -14,10 +14,8 @@ aws_secret_access_key='AhNcHnHjTwaUmwFb6mmbv/BZrmdEcMQyW/GE8v9A'
 )
 
 def uploadFile(filePath, objName):
-    printf(os.getenv(userId))
-    printf('mlstudio-bucket/'+os.getenv(userId))
     try:
-        client.upload_file(filePath, 'mlstudio-bucket/'+os.getenv(userId), objName)
+        client.upload_file(filePath, 'mlstudio-bucket', os.getenv("userId")+"/"+objName)
         print("Upload Successful")
         return True
     except FileNotFoundError:
@@ -30,9 +28,7 @@ def uploadFile(filePath, objName):
 def getFile(objName):
     io_stream = io.BytesIO()
     try:
-        printf(os.getenv(userId))
-        printf('mlstudio-bucket/'+os.getenv(userId))
-        client.download_fileobj('mlstudio-bucket/'+os.getenv(userId), objName, io_stream)
+        client.download_fileobj('mlstudio-bucket', os.getenv("userId")+"/"+objName, io_stream)
         # seek back to the beginning of the file
         io_stream.seek(0)
         data = io_stream.read()
