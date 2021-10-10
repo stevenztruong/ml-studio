@@ -38,10 +38,10 @@ export default class CreateAccount extends React.Component {
       if(res.data.status == "Authenticated"){
         sessionStorage.setItem('token', res.data.accessToken);
         this.setState({showLoading: false});
-        window.location = '/viewmodel';
+        window.location = '/';
       }
       else {
-        alert("Invalid credentials");  
+        alert("Invalid credentials");
       }
     }).catch(error => {
       this.setState({showLoading: false});
@@ -61,7 +61,7 @@ export default class CreateAccount extends React.Component {
             alignItems="center"
             justify="center"
             style={{ minHeight: '100vh' }}
-            
+
           >
               <h1>Online Machine Learning Studio</h1>
               <Card style={{ width: '25%', padding: "2%" }}>
@@ -91,8 +91,8 @@ export default class CreateAccount extends React.Component {
                     <Button onClick={this.onLogin}>SIGN IN</Button>
                     </div>
                     <Button onClick={() => { window.location = '/createaccount' }}>Create an Account</Button>
-                </Card>     
-          </Grid>  
+                </Card>
+          </Grid>
         </div>
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}

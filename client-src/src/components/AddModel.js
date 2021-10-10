@@ -36,7 +36,12 @@ export default class AddModel extends React.Component {
 
     await axios.post(
       process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
-      form_data
+      form_data,
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      },
     ).then(async res => {
       await this.createModelApiCall(
         res.data.training_data,
@@ -56,7 +61,12 @@ export default class AddModel extends React.Component {
         parameters: {},
         trainingData: trainingDataPath,
         classificationData: classificationDataPath,
-        modelName: this.state.modelName
+        modelName: this.state.modelName,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
       }
     ).then(res => {
       alert("Model creation in progress!")
@@ -112,7 +122,7 @@ export default class AddModel extends React.Component {
       return this.renderKnnParameters();
     }
     else {
-      return <div/>;
+      return <div />;
     }
   }
 
@@ -197,13 +207,13 @@ export default class AddModel extends React.Component {
               <FormLabel component="legend">Upload data:</FormLabel>
               <div style={{ padding: "10px" }}>
                 Training data (.json): &nbsp;
-              <input type="file"
+                <input type="file"
                   id="uploadTrainingData"
                   accept="application/JSON" onChange={this.updateTrainingData} required />
               </div>
               <div style={{ padding: "10px" }}>
                 Classification data (.json): &nbsp;
-              <input type="file"
+                <input type="file"
                   id="uploadClassificationData"
                   accept="application/JSON" onChange={this.updateClassificationData} required />
               </div>

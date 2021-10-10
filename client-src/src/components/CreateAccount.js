@@ -34,6 +34,9 @@ export default class CreateAccount extends React.Component {
         password: this.state.password,
         email: this.state.email,
         username: this.state.username,
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
       }
     ).then(res => {
       this.setState({showLoading: false});
@@ -57,8 +60,8 @@ export default class CreateAccount extends React.Component {
               alignItems="center"
               justify="center"
               style={{ minHeight: '100vh' }}
-              
-            >  
+
+            >
             <h1>Online Machine Learning Studio</h1>
             <Card style={{ width: '30%', padding: "2%" }}>
               <h2 style={{ padding: "10px" }}>CREATE ACCOUNT</h2>
