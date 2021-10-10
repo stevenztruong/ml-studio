@@ -23,3 +23,4 @@ amplifytools.xcconfig
 package-lock.json
 __pycache__
 server-src/ml_invocation/models/models_storage/*.pickle
+.vscode
