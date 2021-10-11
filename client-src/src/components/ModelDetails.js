@@ -19,7 +19,8 @@ export default class ModelDetails extends React.Component {
     this.state = {
       selectedModel: 'svm',
       modelName: "",
-      showLoading: false
+      showLoading: false,
+      apiResult: {}
     };
   }
 
@@ -35,13 +36,13 @@ export default class ModelDetails extends React.Component {
           }
         }
       ).then(async res => {
-        console.log(JSON.stringify(res));
+        this.setState({ apiResult: res?.data })
       }).catch(error => {
         alert(error);
       })
     }
     else {
-      alert("Failed to retrieve model id");
+      alert("Failed to retrieve model");
       window.location = '/';
     }
   }
@@ -57,10 +58,15 @@ export default class ModelDetails extends React.Component {
 
     await axios.post(
       //TODO: Upload data using correct path
-      // process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
-      form_data
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
+      form_data,
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      }
     ).then(async res => {
-      await this.testAgainstModelApiCall(
+      await this.trainAgainstModelApiCall(
         res.data.training_data,
         res.data.classification_data
       );
@@ -69,17 +75,17 @@ export default class ModelDetails extends React.Component {
     })
   }
 
-  testAgainstModelApiCall = async (testingDataPath, classificationDataPath) => {
+  trainAgainstModelApiCall = async (trainingDataPath, classificationDataPath) => {
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
-      // process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/training',
       {
         userId: 1,
-        modelType: this.state.selectedModel,
-        parameters: {},
-        testingData: testingDataPath,
+        modelType: this?.state?.apiResult?.modelType,
+        modelName: this?.state?.apiResult?.name,
+        params: {},
+        trainingData: trainingDataPath,
         classificationData: classificationDataPath,
-        modelName: this.state.modelName
       },
       {
         headers: {
@@ -87,7 +93,7 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
-      alert("Model creation in progress!")
+      alert("Training model in progress!")
       window.location = '/';
     }).catch(error => {
       alert(error);
@@ -96,11 +102,11 @@ export default class ModelDetails extends React.Component {
 
   uploadPredictionData = async () => {
     let form_data = new FormData();
-    form_data.append('predictionData', this.state.testingData)
+    form_data.append('predictionData', this.state.predictionData)
 
     await axios.post(
       // TODO: Upload data using correct path
-      // process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
       form_data,
       {
         headers: {
@@ -223,9 +229,16 @@ export default class ModelDetails extends React.Component {
     return (
       <div>
         <NavBar />
+        <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%'}}>
+          <h3>Model: {this?.state?.apiResult?.name} (ID: {this?.state?.apiResult?.id})</h3>
+        </div>
         <div style={{ display: 'flex', height: '100%' }}>
-          <div style={{ width: '33%', height: '100%', padding: "2%" }}>
+          <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
             <Card style={{ height: '50%', padding: "2%" }}>
+              <h3>Details:</h3>
+              <p>Name: {this?.state?.apiResult?.name} </p>
+              <p>ID: {this?.state?.apiResult?.id}</p>
+              <p>Parameters: {JSON.stringify(this?.state?.apiResult?.params)}</p>
               <p>Model Type:</p>
               <p>Status:</p>
               <p>Training input size:</p>
@@ -233,8 +246,9 @@ export default class ModelDetails extends React.Component {
               <p>Prediction status:</p>
             </Card>
           </div>
-          <div style={{ width: '33%', padding: "2%" }}>
+          <div style={{ width: '40%', paddingLeft: "2%" }}>
             <Card style={{ padding: "2%", marginBottom: "5%" }}>
+              <h3>Train model:</h3>
               <FormLabel component="legend">Upload testing and classification data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
                 <div>
@@ -245,16 +259,17 @@ export default class ModelDetails extends React.Component {
                       accept="application/JSON" onChange={this.updateTestingData} required />
                   </div>
                   <div style={{ padding: "10px" }}>
-                    Prediction data (.json): &nbsp;
+                    Classification data (.json): &nbsp;
                     <input type="file"
                       id="uploadClassificationData"
                       accept="application/JSON" onChange={this.updateClassificationData} required />
                   </div>
                 </div>
-                <Button onClick={this.handleSubmitTestingAndClassification}>Test</Button>
+                <Button onClick={this.uploadTestingAndClassificationData}>Test</Button>
               </div>
             </Card>
             <Card style={{ padding: "2%", marginBottom: "5%" }}>
+              <h3>Predict against model:</h3>
               <FormLabel component="legend">Upload prediction data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
                 <div style={{ padding: "10px" }}>
@@ -263,7 +278,7 @@ export default class ModelDetails extends React.Component {
                     id="uploadpredictionData"
                     accept="application/JSON" onChange={this.updatePredictionData} required />
                 </div>
-                <Button onClick={this.handleSubmitPrediction}>Predict</Button>
+                <Button onClick={this.uploadPredictionData}>Predict</Button>
               </div>
             </Card>
           </div>
