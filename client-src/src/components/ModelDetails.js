@@ -83,7 +83,7 @@ export default class ModelDetails extends React.Component {
         userId: 1,
         modelType: this?.state?.apiResult?.modelType,
         modelName: this?.state?.apiResult?.name,
-        params: {},
+        params: this?.state?.apiResult?.params,
         trainingData: trainingDataPath,
         classificationData: classificationDataPath,
       },
@@ -129,7 +129,7 @@ export default class ModelDetails extends React.Component {
       {
         userId: 1,
         modelType: this.state.selectedModel,
-        parameters: {},
+        parameters: this?.state?.apiResult?.params,
         predictionData: predictionDataPath,
         modelName: this.state.modelName
       },
