@@ -47,9 +47,10 @@ module.exports.getModelById = function getModelById (req, res, next) {
   if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
 
   var modelId = req.swagger.params['modelId'].value;
-  Models.getModelById(modelId)
+  Models.getModelById(modelId, req.user.id)
     .then(function (response) {
-      utils.writeJson(res, response);
+      if (!response[0]) return utils.writeJson(res, utils.respondWithCode(404, {"status":"Not Found","statusCode":404}));
+      res.end(JSON.stringify(response[0]));
     })
     .catch(function (response) {
       utils.writeJson(res, response);
