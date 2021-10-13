@@ -35,16 +35,16 @@ export default class CreateAccount extends React.Component {
         }
       }
     ).then(res => {
-      if(res.data.status == "Authenticated"){
+      if (res.data.status == "Authenticated") {
         sessionStorage.setItem('token', res.data.accessToken);
-        this.setState({showLoading: false});
+        this.setState({ showLoading: false });
         window.location = '/';
       }
       else {
         alert("Invalid credentials");
       }
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
 
@@ -63,38 +63,39 @@ export default class CreateAccount extends React.Component {
             style={{ minHeight: '100vh' }}
 
           >
-              <h1>Online Machine Learning Studio</h1>
-              <Card style={{ width: '25%', padding: "2%" }}>
-                    <h2 style={{ padding: "10px" }}>Login</h2>
-                    <div style={{ padding: "10px" }}>
-                    <TextField
-                        style={{ width: '80%' }}
-                        id="username"
-                        onChange={(e) => { this.setState({ username: e.target.value }) }}
-                        label="Username"
-                        variant="outlined"
-                        value={this.state.username}
-                    />
-                    </div>
-                    <div style={{ padding: "10px" }}>
-                    <TextField
-                        style={{ width: '80%' }}
-                        id="password"
-                        onChange={(e) => { this.setState({ password: e.target.value }) }}
-                        label="Password"
-                        variant="outlined"
-                        value={this.state.password}
-                        type="password"
-                    />
-                    </div>
-                    <div>
-                    <Button onClick={this.onLogin}>SIGN IN</Button>
-                    </div>
-                    <Button onClick={() => { window.location = '/createaccount' }}>Create an Account</Button>
-                </Card>
+            <h1>Online Machine Learning Studio</h1>
+            <Card style={{ width: '25%', padding: "2%" }}>
+              <h2 style={{ padding: "10px" }}>Login</h2>
+              <div style={{ padding: "10px" }}>
+                <TextField
+                  style={{ width: '80%' }}
+                  id="username"
+                  onChange={(e) => { this.setState({ username: e.target.value }) }}
+                  label="Username"
+                  variant="outlined"
+                  value={this.state.username}
+                />
+              </div>
+              <div style={{ padding: "10px" }}>
+                <TextField
+                  style={{ width: '80%' }}
+                  id="password"
+                  onChange={(e) => { this.setState({ password: e.target.value }) }}
+                  label="Password"
+                  variant="outlined"
+                  value={this.state.password}
+                  type="password"
+                />
+              </div>
+              <div>
+                <Button onClick={this.onLogin}>SIGN IN</Button>
+              </div>
+              <Button onClick={() => { window.location = '/createaccount' }}>Create an Account</Button>
+            </Card>
           </Grid>
         </div>
         <Backdrop
+          style={{ zIndex: 1 }}
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={this.state.showLoading}
         >
