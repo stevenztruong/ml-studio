@@ -41,7 +41,12 @@ export default class ModelDashboard extends React.Component {
 
   deleteModelApiCall = async (id) => {
     await axios.delete(
-      process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + id
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + id,
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      }
     ).then(res => {
       this.getModelApiCall()
     }).catch(error => {

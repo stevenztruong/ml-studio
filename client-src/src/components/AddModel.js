@@ -18,7 +18,8 @@ export default class AddModel extends React.Component {
     super(props);
     this.state = {
       selectedModel: 'SVM',
-      modelName: ""
+      modelName: "",
+      selectedParameters: {},
     };
   }
 
@@ -58,7 +59,7 @@ export default class AddModel extends React.Component {
       {
         userId: 1,
         modelType: this.state.selectedModel,
-        parameters: {},
+        parameters: this.state.selectedParameters,
         trainingData: trainingDataPath,
         classificationData: classificationDataPath,
         modelName: this.state.modelName,
@@ -92,6 +93,7 @@ export default class AddModel extends React.Component {
     return (
       <div style={{ padding: "10px" }}>
         <TextField
+          style={{ width: '70%' }}
           id="modelName"
           onChange={(e) => { this.setState({ modelName: e.target.value }) }}
           label="Model Name"
@@ -100,6 +102,12 @@ export default class AddModel extends React.Component {
         />
       </div>
     )
+  }
+
+  setParameters = (parameterName, parameter) => {
+    let newParameters = { ... this.state.selectedParameters };
+    newParameters[parameterName] = parameter;
+    this.setState({ selectedParameters: newParameters });
   }
 
   renderModelParameters = () => {
@@ -164,8 +172,51 @@ export default class AddModel extends React.Component {
 
   renderMLPClassifierParameters = () => {
     return (
-      <div style={{ padding: "2%" }}>
-
+      <div>
+        {/* <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="MLPTotalLayers"
+            onChange={(e) => { this.setParameters('mlpTotalLayers', e.target.value) }}
+            label="Total Layers"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.mlpTotalLayers}
+          />
+        </div> */}
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="MLPHiddenLayers"
+            onChange={(e) => { this.setParameters('mlpHiddenLayers', e.target.value) }}
+            label="Hidden Layers"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.mlpHiddenLayers}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="MLPIterationCount"
+            onChange={(e) => { this.setParameters('mlpMaximumIterations', e.target.value) }}
+            label="Maximum Training Iterations"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.mlpMaximumIterations}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Activation Function:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.mlpActivationFunction} onChange={(e) => this.setParameters('mlpActivationFunction', e.target.value)}>
+              <FormControlLabel value="identity" control={<Radio />} label="Identity" />
+              <FormControlLabel value="logistic" control={<Radio />} label="Logistic" />
+              <FormControlLabel value="tanh" control={<Radio />} label="TANH" />
+              <FormControlLabel value="relu" control={<Radio />} label="RELU" />
+            </RadioGroup>
+          </FormControl>
+        </div>
       </div>
     )
   }
@@ -196,9 +247,11 @@ export default class AddModel extends React.Component {
                 </RadioGroup>
               </FormControl>
             </Card>
-            <Card style={{ height: '50%', padding: "2%" }}>
+            <Card style={{ height: '50%', padding: "2%", marginTop: '4%' }}>
+              <FormLabel component="legend">Model parameters:</FormLabel>
+
               {this.renderModelName()}
-              <div ></div>
+              <div></div>
               {this.renderModelParameters()}
             </Card>
           </div>
