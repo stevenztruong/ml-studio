@@ -13,7 +13,7 @@ import {
 import NavBar from './NavBar';
 import axios from 'axios';
 
-export default class ModelDetails extends React.Component {
+export default class DeployModel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -309,20 +309,8 @@ export default class ModelDetails extends React.Component {
     )
   }
 
-  handleDownload = () => {
-    this.setState({ showLoading: true });
-  }
-
-  handleDelete = async () => {
-    this.setState({ showLoading: true });
-    await this.deleteModelApiCall(this.state.modelId);
-    this.setState({ showLoading: false });
-
-  }
-
-  handleDeploy = () => {
-    // this.setState({ showLoading: true });
-    window.location = '/deploy/' + this.state.modelId;
+  handleDetails = () => {
+    window.location = '/model/' + this.state.modelId;
   }
 
   render() {
@@ -330,7 +318,7 @@ export default class ModelDetails extends React.Component {
       <div>
         <NavBar />
         <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
-          <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
+          <h3>Deploy {this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
@@ -352,7 +340,7 @@ export default class ModelDetails extends React.Component {
             </Card>
           </div>
           <div style={{ width: '40%', paddingLeft: "2%" }}>
-            <Card style={{ padding: "2%", marginBottom: "5%" }}>
+            {/* <Card style={{ padding: "2%", marginBottom: "5%" }}>
               <h3>Train model:</h3>
               <FormLabel component="legend">Upload training and classification data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
@@ -403,8 +391,8 @@ export default class ModelDetails extends React.Component {
                   Test
                 </Button>
               </div>
-            </Card>
-            {/* <Card style={{ padding: "2%", marginBottom: "5%" }}>
+            </Card> */}
+            <Card style={{ padding: "2%", marginBottom: "5%" }}>
               <h3>Predict against model:</h3>
               <FormLabel component="legend">Upload prediction data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
@@ -421,13 +409,11 @@ export default class ModelDetails extends React.Component {
                   Predict
                 </Button>
               </div>
-            </Card> */}
+            </Card>
           </div>
         </div>
         <div style={{ padding: "2%" }}>
-          <Button onClick={this.handleDownload}>Download</Button>
-          <Button onClick={this.handleDelete}>Delete</Button>
-          <Button onClick={this.handleDeploy}>Deploy</Button>
+          <Button onClick={this.handleDetails}>Details</Button>
         </div>
         <Backdrop
           style={{ zIndex: 1 }}
