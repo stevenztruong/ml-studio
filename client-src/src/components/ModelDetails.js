@@ -51,20 +51,19 @@ export default class ModelDetails extends React.Component {
     this.setState({ selectedModel: e.target.value });
   }
 
-  uploadTestingAndClassificationData = async () => {
+  uploadTrainingAndClassificationData = async () => {
     let form_data = new FormData();
-    form_data.append('testingData', this.state.testingData)
-    form_data.append('classificationData', this.state.classificationData)
+    form_data.append('trainingData', this.state.trainingData)
+    form_data.append('classificationData', this.state.trainingClassificationData)
 
     await axios.post(
-      //TODO: Upload data using correct path
       process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
       form_data,
       {
         headers: {
           Authorization: 'Bearer ' + sessionStorage.getItem('token')
         }
-      }
+      },
     ).then(async res => {
       await this.trainAgainstModelApiCall(
         res.data.training_data,
@@ -82,8 +81,8 @@ export default class ModelDetails extends React.Component {
       {
         userId: 1,
         modelType: this?.state?.apiResult?.modelType,
-        modelName: this?.state?.apiResult?.name,
-        params: this?.state?.apiResult?.params,
+        modelName: this?.state?.apiResult?.modelName,
+        parameters: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
         trainingData: trainingDataPath,
         classificationData: classificationDataPath,
       },
@@ -94,11 +93,60 @@ export default class ModelDetails extends React.Component {
       },
     ).then(res => {
       alert("Training model in progress!")
-      window.location = '/';
+      // window.location = '/';
     }).catch(error => {
       alert(error);
     })
   }
+
+  uploadTestingAndClassificationData = async () => {
+    let form_data = new FormData();
+    form_data.append('trainingData', this.state.testingData)
+    form_data.append('classificationData', this.state.testingClassificationData)
+
+    await axios.post(
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
+      form_data,
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      },
+    ).then(async res => {
+      await this.testAgainstModelApiCall(
+        res.data.training_data,
+        res.data.classification_data
+      );
+    }).catch(error => {
+      alert(error);
+    })
+  }
+
+  testAgainstModelApiCall = async (testingDataPath, classificationDataPath) => {
+    await axios.post(
+      // TODO: Call the API to test against the model and pass correct parameters
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/testing',
+      {
+        userId: 1,
+        modelType: this?.state?.apiResult?.modelType,
+        modelName: this?.state?.apiResult?.modelName,
+        parameters: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
+        trainingData: testingDataPath,
+        classificationData: classificationDataPath,
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      },
+    ).then(res => {
+      alert("Testing model in progress!")
+      // window.location = '/';
+    }).catch(error => {
+      alert(error);
+    })
+  }
+
 
   uploadPredictionData = async () => {
     let form_data = new FormData();
@@ -129,7 +177,7 @@ export default class ModelDetails extends React.Component {
       {
         userId: 1,
         modelType: this.state.selectedModel,
-        parameters: this?.state?.apiResult?.params,
+        parameters: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
         predictionData: predictionDataPath,
         modelName: this.state.modelName
       },
@@ -146,15 +194,27 @@ export default class ModelDetails extends React.Component {
     })
   }
 
+  updateTrainingData = e => {
+    this.setState({
+      trainingData: e.target.files[0],
+    })
+  }
+
+  updateTrainingClassificationData = e => {
+    this.setState({
+      trainingClassificationData: e.target.files[0],
+    })
+  }
+
   updateTestingData = e => {
     this.setState({
       testingData: e.target.files[0],
     })
   }
 
-  updateClassificationData = e => {
+  updateTestingClassificationData = e => {
     this.setState({
-      classificationData: e.target.files[0],
+      testingClassificationData: e.target.files[0],
     })
   }
 
@@ -229,18 +289,23 @@ export default class ModelDetails extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%'}}>
-          <h3>Model: {this?.state?.apiResult?.name} (ID: {this?.state?.apiResult?.id})</h3>
+        <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
+          <h3>Model: {this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
             <Card style={{ height: '50%', padding: "2%" }}>
               <h3>Details:</h3>
-              <p>Name: {this?.state?.apiResult?.name} </p>
+              <p>Name: {this?.state?.apiResult?.modelName} </p>
               <p>ID: {this?.state?.apiResult?.id}</p>
-              <p>Parameters: {JSON.stringify(this?.state?.apiResult?.params)}</p>
-              <p>Model Type:</p>
-              <p>Status:</p>
+              {
+                this?.state?.apiResult?.parms ?
+                  <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>
+                  :
+                  <p>Parameters: N/A</p>
+              }
+              <p>Model Type: {this?.state?.apiResult?.modelType}</p>
+              <p>Status: {this?.state?.apiResult?.status}</p>
               <p>Training input size:</p>
               <p>Testing input size:</p>
               <p>Prediction status:</p>
@@ -249,20 +314,41 @@ export default class ModelDetails extends React.Component {
           <div style={{ width: '40%', paddingLeft: "2%" }}>
             <Card style={{ padding: "2%", marginBottom: "5%" }}>
               <h3>Train model:</h3>
+              <FormLabel component="legend">Upload training and classification data:</FormLabel>
+              <div style={{ 'display': 'inline-flex' }}>
+                <div>
+                  <div style={{ padding: "10px" }}>
+                    Training data (.json): &nbsp;
+                    <input type="file"
+                      id="uploadtrainingData"
+                      accept="application/JSON" onChange={this.updateTrainingData} required />
+                  </div>
+                  <div style={{ padding: "10px" }}>
+                    Training classification data (.json): &nbsp;
+                    <input type="file"
+                      id="uploadClassificationData"
+                      accept="application/JSON" onChange={this.updateTrainingClassificationData} required />
+                  </div>
+                </div>
+                <Button onClick={this.uploadTrainingAndClassificationData}>Train</Button>
+              </div>
+            </Card>
+            <Card style={{ padding: "2%", marginBottom: "5%" }}>
+              <h3>Test model:</h3>
               <FormLabel component="legend">Upload testing and classification data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
                 <div>
                   <div style={{ padding: "10px" }}>
                     Testing data (.json): &nbsp;
                     <input type="file"
-                      id="uploadtestingData"
+                      id="uploadtrainingData"
                       accept="application/JSON" onChange={this.updateTestingData} required />
                   </div>
                   <div style={{ padding: "10px" }}>
-                    Classification data (.json): &nbsp;
+                    Testing classification data (.json): &nbsp;
                     <input type="file"
                       id="uploadClassificationData"
-                      accept="application/JSON" onChange={this.updateClassificationData} required />
+                      accept="application/JSON" onChange={this.updateTestingClassificationData} required />
                   </div>
                 </div>
                 <Button onClick={this.uploadTestingAndClassificationData}>Test</Button>
