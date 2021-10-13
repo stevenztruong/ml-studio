@@ -8,7 +8,9 @@ import {
   Card,
   Button,
   TextField,
-  Checkbox
+  Checkbox,
+  Backdrop,
+  CircularProgress,
 } from '@material-ui/core';
 
 import NavBar from './NavBar';
@@ -21,6 +23,7 @@ export default class AddModel extends React.Component {
       selectedModel: 'SVM',
       modelName: "",
       selectedParameters: {},
+      showLoading: false,
     };
   }
 
@@ -32,6 +35,7 @@ export default class AddModel extends React.Component {
   }
 
   uploadData = async () => {
+    this.setState({showLoading: true});
     let form_data = new FormData();
     form_data.append('trainingData', this.state.trainingData)
     form_data.append('classificationData', this.state.classificationData)
@@ -50,11 +54,13 @@ export default class AddModel extends React.Component {
         res.data.classification_data
       );
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
 
   createModelApiCall = async (trainingDataPath, classificationDataPath) => {
+    this.setState({showLoading: true});
     let filteredSelectedParameters = Object.fromEntries(Object.entries(this.state.selectedParameters).filter(([_, val]) => val != ''));
     if (this.state.selectedModel === 'Multinomial Naive Bayes') {
       if (!filteredSelectedParameters?.naiveBayesGaussianFitPrior) {
@@ -78,9 +84,11 @@ export default class AddModel extends React.Component {
         }
       }
     ).then(res => {
+      this.setState({showLoading: false});
       alert("Model creation in progress!")
       window.location = '/';
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
@@ -380,9 +388,28 @@ export default class AddModel extends React.Component {
           </div>
 
           <div style={{ width: '33%', padding: "2%" }}>
-            <Button onClick={this.uploadData}>Create Model</Button>
+            <Button
+              onClick={this.uploadData}
+              disabled={
+                !(
+                  this.state.modelName
+                  && this.state.modelName != ''
+                  && this.state.trainingData
+                  && this.state.classificationData
+                  )
+                }
+              >
+                Create Model
+              </Button>
           </div>
         </div>
+        <Backdrop
+          style={{ zIndex: 1 }}
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={this.state.showLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     );
   }

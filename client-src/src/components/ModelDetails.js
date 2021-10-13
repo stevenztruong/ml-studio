@@ -19,12 +19,13 @@ export default class ModelDetails extends React.Component {
     this.state = {
       selectedModel: 'svm',
       modelName: "",
-      showLoading: false,
+      showLoading: true,
       apiResult: {}
     };
   }
 
   componentDidMount = async () => {
+    this.setState({showLoading: true});
     let splitPath = window.location.pathname.split('/');
     let modelId = splitPath[splitPath.length - 1];
     if (modelId) {
@@ -37,8 +38,9 @@ export default class ModelDetails extends React.Component {
           }
         }
       ).then(async res => {
-        this.setState({ apiResult: res?.data })
+        this.setState({showLoading: false, apiResult: res?.data })
       }).catch(error => {
+        this.setState({showLoading: false});
         alert(error);
       })
     }
@@ -53,6 +55,7 @@ export default class ModelDetails extends React.Component {
   }
 
   uploadTrainingAndClassificationData = async () => {
+    this.setState({showLoading: true});
     let form_data = new FormData();
     form_data.append('trainingData', this.state.trainingData)
     form_data.append('classificationData', this.state.trainingClassificationData)
@@ -71,11 +74,13 @@ export default class ModelDetails extends React.Component {
         res.data.classification_data
       );
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
 
   trainAgainstModelApiCall = async (trainingDataPath, classificationDataPath) => {
+    this.setState({showLoading: true});
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/training',
@@ -93,14 +98,17 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
+      this.setState({showLoading: false});
       alert("Training model in progress!")
       // window.location = '/';
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
 
   uploadTestingAndClassificationData = async () => {
+    this.setState({showLoading: true});
     let form_data = new FormData();
     form_data.append('trainingData', this.state.testingData)
     form_data.append('classificationData', this.state.testingClassificationData)
@@ -119,11 +127,13 @@ export default class ModelDetails extends React.Component {
         res.data.classification_data
       );
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
 
   testAgainstModelApiCall = async (testingDataPath, classificationDataPath) => {
+    this.setState({showLoading: true});
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/testing',
@@ -141,15 +151,18 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
+      this.setState({showLoading: false});
       alert("Testing model in progress!")
       // window.location = '/';
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
 
 
   uploadPredictionData = async () => {
+    this.setState({showLoading: true});
     let form_data = new FormData();
     form_data.append('predictionData', this.state.predictionData)
 
@@ -167,11 +180,13 @@ export default class ModelDetails extends React.Component {
         res.data.prediction_data,
       );
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
 
   predictAgainstModelApiCall = async (predictionDataPath) => {
+    this.setState({showLoading: true});
     await axios.post(
       // TODO: Call the API to predict against the model and pass correct parameters
       // process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
@@ -188,9 +203,11 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
+      this.setState({showLoading: false});
       alert("Model creation in progress!")
       window.location = '/';
     }).catch(error => {
+      this.setState({showLoading: false});
       alert(error);
     })
   }
