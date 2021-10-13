@@ -111,10 +111,12 @@ export default class AddModel extends React.Component {
         <TextField
           style={{ width: '70%' }}
           id="modelName"
-          onChange={(e) => { this.setState({ modelName: e.target.value }) }}
+          onChange={(e) => { !(e.target.value.length > 20) && this.setState({ modelName: e.target.value }) }}
           label="Model Name"
           variant="outlined"
           value={this.state.modelName}
+          error={this.state?.modelName?.length >= 20}
+          helperText={"Length cannot exceed 20 characters"}
         />
       </div>
     )
