@@ -57,7 +57,8 @@ if __name__ == '__main__':
     """
         python ml.py createmodel svm /usr/Documents/file.txt /usr/Documents/file2.txt
     """
-
+    print("ML Invocation Layer input params:")
+    print(sys.argv[1:])
     # For the prototype, will support 5 params or 6 params
     if len(sys.argv) == 6:
         run(sys.argv[1], sys.argv[2], sys.argv[3],

@@ -6,6 +6,7 @@ import command_types
 import utilities
 import s3Util
 
+
 def handleSVM(command, inputData, classificationData, modelName, parameters):
     if(command == command_types.CREATE_MODEL):
         return createModel(inputData, classificationData, modelName, parameters)
@@ -21,7 +22,39 @@ def handleSVM(command, inputData, classificationData, modelName, parameters):
 
 def createModel(trainingData, classificationData, modelName, parameters):
     try:
-        classifer = svm.SVC(gamma = "auto")
+        print("API input parameters: "+str(parameters))
+        jsonParameters = json.loads(parameters)
+
+        modelParams = {}
+
+        print("reached")
+
+        cParam = jsonParameters.get('svmCParam')
+        if(cParam != None):
+            print("C parameter present")
+            modelParams['C'] = float(cParam)
+            print("Successfully read C parameter")
+
+        kernel = jsonParameters.get('svmKernel')
+        if(kernel != None):
+            print('kernel parameter present')
+            modelParams['kernel'] = str(kernel)
+            print('Successfully read kernel parameter')
+
+        gamma = jsonParameters.get('svmGamma')
+        if(gamma != None):
+            print('gamma parameter present')
+            modelParams['gamma'] = str(gamma)
+            print('Successfully read gamma parameter')
+
+        maxIterations = jsonParameters.get('svmMaxIterations')
+        if(maxIterations != None):
+            print('Max iterations parameter present')
+            modelParams['max_iter'] = int(maxIterations)
+            print('Successfully read Max Iterations parameter')
+
+        print("Constructed parameters: " + str(modelParams))
+        classifer = svm.SVC(**modelParams)
         print("Created SVM classifier")
         # The commented lines for trainingDataSet and classificationDataSet
         # are used for retrieving the files locally for TESTING purposes only
@@ -38,6 +71,7 @@ def createModel(trainingData, classificationData, modelName, parameters):
     except Exception as e:
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
+
 
 def trainModel(trainingData, classificationData, modelName, parameters):
     try:
@@ -65,6 +99,7 @@ def trainModel(trainingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 def testModel(testingData, classificationData, modelName, parameters):
     try:
         classifer = utilities.getModel(modelName)
@@ -91,6 +126,7 @@ def testModel(testingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 def predictModel(predictionData, modelName, parameters):
     try:
         classifer = utilities.getModel(modelName)
@@ -109,15 +145,20 @@ def predictModel(predictionData, modelName, parameters):
         print("Result: " + str(res))
         print("success")
 
-        returnObject = json.dumps({'result': 'success', 'prediction': str(res)})
+        returnObject = json.dumps(
+            {'result': 'success', 'prediction': str(res)})
         print("Return object: " + str(returnObject))
         return(returnObject)
     except Exception as e:
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 if __name__ == '__main__':
-    createModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
-    trainModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
-    testModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
+    createModel("testTrainingData.json",
+                "testClassificationData.json", "testModelName", None)
+    trainModel("testTrainingData.json",
+               "testClassificationData.json", "testModelName", None)
+    testModel("testTrainingData.json",
+              "testClassificationData.json", "testModelName", None)
     predictModel("testTrainingData.json", "testModelName", None)

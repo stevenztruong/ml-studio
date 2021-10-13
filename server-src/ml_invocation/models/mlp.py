@@ -6,6 +6,7 @@ import command_types
 import utilities
 import s3Util
 
+
 def handleMLP(command, inputData, classificationData, modelName, parameters):
     if(command == command_types.CREATE_MODEL):
         return createModel(inputData, classificationData, modelName, parameters)
@@ -18,9 +19,45 @@ def handleMLP(command, inputData, classificationData, modelName, parameters):
     else:
         return(json.dumps({'result': 'error', 'message': "Invalid command. Please use a valid command type."}))
 
+
 def createModel(trainingData, classificationData, modelName, parameters):
     try:
-        classifer = neural_network.MLPClassifier()
+        print("API input parameters: "+str(parameters))
+        jsonParameters = json.loads(parameters)
+
+        modelParams = {}
+
+        print("reached")
+
+        # totalLayers = jsonParameters.get('mlpTotalLayers')
+        # if(totalLayers != None):
+        #     print("total layers parameter present")
+        #     modelParams['n_layers'] = int(totalLayers)
+        #     print("Successfully read total layersparameter")
+
+        hiddenLayers = jsonParameters.get('mlpHiddenLayers')
+        if(hiddenLayers != None):
+            print("hidden layers parameter present")
+            modelParams['hidden_layer_sizes'] = int(hiddenLayers)
+            print("Successfully read hidden layers parameter")
+
+        maximumIterations = jsonParameters.get('mlpMaximumIterations')
+        if(maximumIterations != None):
+            print('max iters parameter present')
+            modelParams['max_iter'] = int(maximumIterations)
+            print('Successfully read max iters parameter')
+
+        activationFunction = jsonParameters.get('mlpActivationFunction')
+        if(activationFunction != None):
+            print('activation function parameter present')
+            modelParams['activation'] = str(activationFunction)
+            print('Successfully read activation function parameter')
+
+        # print("hidden layers: " + str(modelParams['hidden_layer_sizes']))
+        # print("max iterations: " + str(modelParams['max_iter']))
+
+        print("Constructed parameters: " + str(modelParams))
+        classifer = neural_network.MLPClassifier(**modelParams)
         print("Created MLP classifier")
         # The commented lines for trainingDataSet and classificationDataSet
         # are used for retrieving the files locally for TESTING purposes only
@@ -37,6 +74,7 @@ def createModel(trainingData, classificationData, modelName, parameters):
     except Exception as e:
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
+
 
 def trainModel(trainingData, classificationData, modelName, parameters):
     try:
@@ -64,6 +102,7 @@ def trainModel(trainingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 def testModel(testingData, classificationData, modelName, parameters):
     try:
         classifer = utilities.getModel(modelName)
@@ -90,6 +129,7 @@ def testModel(testingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 def predictModel(predictionData, modelName, parameters):
     try:
         classifer = utilities.getModel(modelName)
@@ -108,15 +148,20 @@ def predictModel(predictionData, modelName, parameters):
         print("Result: " + str(res))
         print("success")
 
-        returnObject = json.dumps({'result': 'success', 'prediction': str(res)})
+        returnObject = json.dumps(
+            {'result': 'success', 'prediction': str(res)})
         print("Return object: " + str(returnObject))
         return(returnObject)
     except Exception as e:
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 if __name__ == '__main__':
-    createModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
-    trainModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
-    testModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
+    createModel("testTrainingData.json",
+                "testClassificationData.json", "testModelName", "{}")
+    trainModel("testTrainingData.json",
+               "testClassificationData.json", "testModelName", None)
+    testModel("testTrainingData.json",
+              "testClassificationData.json", "testModelName", None)
     predictModel("testTrainingData.json", "testModelName", None)
