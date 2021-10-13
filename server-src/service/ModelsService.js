@@ -64,7 +64,7 @@ exports.trainModel = function(userId, body) {
 exports.testModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
-    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "testmodel", body.modelType, body.training, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "testmodel", body.modelType, body.trainingData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
     })
