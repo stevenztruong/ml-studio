@@ -22,7 +22,7 @@ def handleMLP(command, inputData, classificationData, modelName, parameters):
 
 def createModel(trainingData, classificationData, modelName, parameters):
     try:
-        print("test:L : "+str(parameters))
+        print("API input parameters: "+str(parameters))
         jsonParameters = json.loads(parameters)
 
         modelParams = {}
@@ -56,7 +56,7 @@ def createModel(trainingData, classificationData, modelName, parameters):
         # print("hidden layers: " + str(modelParams['hidden_layer_sizes']))
         # print("max iterations: " + str(modelParams['max_iter']))
 
-        print("Parameters: " + str(modelParams))
+        print("Constructed parameters: " + str(modelParams))
         classifer = neural_network.MLPClassifier(**modelParams)
         print("Created MLP classifier")
         # The commented lines for trainingDataSet and classificationDataSet

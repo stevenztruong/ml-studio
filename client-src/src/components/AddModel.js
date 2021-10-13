@@ -7,7 +7,8 @@ import {
   Radio,
   Card,
   Button,
-  TextField
+  TextField,
+  Checkbox
 } from '@material-ui/core';
 
 import NavBar from './NavBar';
@@ -54,12 +55,19 @@ export default class AddModel extends React.Component {
   }
 
   createModelApiCall = async (trainingDataPath, classificationDataPath) => {
+    let filteredSelectedParameters = Object.fromEntries(Object.entries(this.state.selectedParameters).filter(([_, val]) => val != ''));
+    if (this.state.selectedModel === 'Multinomial Naive Bayes') {
+      if (!filteredSelectedParameters?.naiveBayesGaussianFitPrior) {
+        filteredSelectedParameters['naiveBayesGaussianFitPrior'] = 'False';
+      }
+    }
+
     await axios.post(
       process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
       {
         userId: 1,
         modelType: this.state.selectedModel,
-        parameters: this.state.selectedParameters,
+        parameters: filteredSelectedParameters,
         trainingData: trainingDataPath,
         classificationData: classificationDataPath,
         modelName: this.state.modelName,
@@ -136,13 +144,50 @@ export default class AddModel extends React.Component {
 
   renderSvmParameters = () => {
     return (
-      <div style={{ padding: "2%" }}>
-        <FormControl component="fieldset">
-          <FormLabel component="legend">Model Parameters</FormLabel>
-          <RadioGroup aria-label="parameters" name="parameters" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
-            <TextField disabled label="Layers" variant="outlined" style={{ padding: "2%" }} value={this.state.knnLayers} onChange={(e) => this.setState({ knnLayers: e.target.value })} />
-          </RadioGroup>
-        </FormControl>
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="SVMCParam"
+            onChange={(e) => { (e.target.value === '' || e.target.value >= 0) && this.setParameters('svmCParam', e.target.value) }}
+            label="C"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.svmCParam}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="SVMMaxIterations"
+            onChange={(e) => { (e.target.value >= -1 || e.target.value === '') && this.setParameters('svmMaxIterations', e.target.value) }}
+            label="Max iterations"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.svmMaxIterations}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Kernel:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.svmKernel} onChange={(e) => this.setParameters('svmKernel', e.target.value)}>
+              <FormControlLabel value="linear" control={<Radio />} label="Linear" />
+              <FormControlLabel value="poly" control={<Radio />} label="Polynomial" />
+              <FormControlLabel value="rbf" control={<Radio />} label="RBF" />
+              <FormControlLabel value="sigmoid" control={<Radio />} label="Sigmoid" />
+              <FormControlLabel value="precomputed" control={<Radio />} label="Precomputed" />
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Gamma:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.svmGamma} onChange={(e) => this.setParameters('svmGamma', e.target.value)}>
+              <FormControlLabel value="scale" control={<Radio />} label="Scale" />
+              <FormControlLabel value="auto" control={<Radio />} label="Auto" />
+            </RadioGroup>
+          </FormControl>
+        </div>
       </div>
     )
   }
@@ -156,16 +201,47 @@ export default class AddModel extends React.Component {
 
   renderMultinomialNBParameters = () => {
     return (
-      <div style={{ padding: "2%" }}>
-
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="naiveBayesGaussianAlpha"
+            onChange={(e) => { (e.target.value === '' || e.target.value >= 0) && this.setParameters('naiveBayesGaussianAlpha', e.target.value) }}
+            label="Alpha"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.naiveBayesGaussianAlpha}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControlLabel
+            label="Fit Prior"
+            control={
+              <Checkbox
+                checked={this.state?.selectedParameters?.naiveBayesGaussianFitPrior === 'True'}
+                onChange={(e) => e.target.checked ? this.setParameters('naiveBayesGaussianFitPrior', 'True') : this.setParameters('naiveBayesGaussianFitPrior', 'False')}
+              />
+            }
+          />
+        </div>
       </div>
     )
   }
 
   renderDecisionTreeClassifierParameters = () => {
     return (
-      <div style={{ padding: "2%" }}>
-
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="decisionTreeMaxDepth"
+            onChange={(e) => { (e.target.value === '' || e.target.value > 0) && this.setParameters('decisionTreeMaxDepth', e.target.value) }}
+            label="Max depth"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.naiveBayesGaussianAlpha}
+          />
+        </div>
       </div>
     )
   }
@@ -223,7 +299,38 @@ export default class AddModel extends React.Component {
 
   renderKnnParameters = () => {
     return (
-      <div style={{ padding: "2%" }}>
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="knnNNearestNeighbors"
+            onChange={(e) => { this.setParameters('knnNNearestNeighbors', e.target.value) }}
+            label="Nearest Neighbors Count"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.knnNNearestNeighbors}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Weights function:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.knnWeightsFunction} onChange={(e) => this.setParameters('knnWeightsFunction', e.target.value)}>
+              <FormControlLabel value="uniform" control={<Radio />} label="Uniform" />
+              <FormControlLabel value="distance" control={<Radio />} label="Distance" />
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Algorithm:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.knnAlgorithm} onChange={(e) => this.setParameters('knnAlgorithm', e.target.value)}>
+              <FormControlLabel value="auto" control={<Radio />} label="Auto" />
+              <FormControlLabel value="ball_tree" control={<Radio />} label="Ball Tree" />
+              <FormControlLabel value="kd_tree" control={<Radio />} label="KD Tree" />
+              <FormControlLabel value="brute" control={<Radio />} label="Brute" />
+            </RadioGroup>
+          </FormControl>
+        </div>
       </div>
     )
   }
@@ -249,7 +356,6 @@ export default class AddModel extends React.Component {
             </Card>
             <Card style={{ height: '50%', padding: "2%", marginTop: '4%' }}>
               <FormLabel component="legend">Model parameters:</FormLabel>
-
               {this.renderModelName()}
               <div></div>
               {this.renderModelParameters()}

@@ -26,12 +26,35 @@ def handlNaiveBayes(command, inputData, classificationData, modelName, parameter
 def createModel(trainingData, classificationData, modelName, parameters, modelType):
     try:
         classifier = None
-        # TODO: add more Naive Bayes algorithms
         if modelType == models_types.GAUSSIAN_NB:
             classifer = naive_bayes.GaussianNB()
             print("Created Gaussian Naive Bayes Classifier")
+
         elif modelType == models_types.MULTINOMIAL_NB:
-            classifer = naive_bayes.MultinomialNB()
+            print("API input parameters: "+str(parameters))
+            jsonParameters = json.loads(parameters)
+
+            modelParams = {}
+
+            print("reached")
+
+            alpha = jsonParameters.get('naiveBayesGaussianAlpha')
+            if(alpha != None):
+                print("Alpha parameter present")
+                modelParams['alpha'] = float(alpha)
+                print("Successfully read Alpha parameter")
+
+            fitPrior = jsonParameters.get('naiveBayesGaussianFitPrior')
+            if(fitPrior != None):
+                print('Fit Prior parameter present')
+                modelParams['fit_prior'] = bool(fitPrior)
+                print('Successfully read Fit Prior parameter')
+
+            else:
+                modelParams['fit_prior'] = False
+
+            print("Constructed parameters: " + str(modelParams))
+            classifer = naive_bayes.MultinomialNB(**modelParams)
             print("Created Multinomial Naive Bayes Classifier")
 
         # The commented lines for trainingDataSet and classificationDataSet

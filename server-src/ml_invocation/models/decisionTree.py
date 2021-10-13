@@ -6,6 +6,7 @@ import command_types
 import utilities
 import s3Util
 
+
 def handleDecisionTree(command, inputData, classificationData, modelName, parameters):
     if(command == command_types.CREATE_MODEL):
         return createModel(inputData, classificationData, modelName, parameters)
@@ -18,9 +19,24 @@ def handleDecisionTree(command, inputData, classificationData, modelName, parame
     else:
         return(json.dumps({'result': 'error', 'message': "Invalid command. Please use a valid command type."}))
 
+
 def createModel(trainingData, classificationData, modelName, parameters):
     try:
-        classifer = tree.DecisionTreeClassifier()
+        print("API input parameters: "+str(parameters))
+        jsonParameters = json.loads(parameters)
+
+        modelParams = {}
+
+        print("reached")
+
+        maxDepth = jsonParameters.get('decisionTreeMaxDepth')
+        if(maxDepth != None):
+            print("hidden layers parameter present")
+            modelParams['max_depth'] = int(maxDepth)
+            print("Successfully read hidden layers parameter")
+
+        print("Constructed parameters: " + str(modelParams))
+        classifer = tree.DecisionTreeClassifier(**modelParams)
         print("Created Decision Tree classifier")
         # The commented lines for trainingDataSet and classificationDataSet
         # are used for retrieving the files locally for TESTING purposes only
@@ -37,6 +53,7 @@ def createModel(trainingData, classificationData, modelName, parameters):
     except Exception as e:
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
+
 
 def trainModel(trainingData, classificationData, modelName, parameters):
     try:
@@ -64,6 +81,7 @@ def trainModel(trainingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 def testModel(testingData, classificationData, modelName, parameters):
     try:
         classifer = utilities.getModel(modelName)
@@ -90,6 +108,7 @@ def testModel(testingData, classificationData, modelName, parameters):
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 def predictModel(predictionData, modelName, parameters):
     try:
         classifer = utilities.getModel(modelName)
@@ -108,15 +127,20 @@ def predictModel(predictionData, modelName, parameters):
         print("Result: " + str(res))
         print("success")
 
-        returnObject = json.dumps({'result': 'success', 'prediction': str(res)})
+        returnObject = json.dumps(
+            {'result': 'success', 'prediction': str(res)})
         print("Return object: " + str(returnObject))
         return(returnObject)
     except Exception as e:
         print("failure")
         return(json.dumps({'result': 'error', 'message': str(e)}))
 
+
 if __name__ == '__main__':
-    createModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
-    trainModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
-    testModel("testTrainingData.json", "testClassificationData.json", "testModelName", None)
+    createModel("testTrainingData.json",
+                "testClassificationData.json", "testModelName", None)
+    trainModel("testTrainingData.json",
+               "testClassificationData.json", "testModelName", None)
+    testModel("testTrainingData.json",
+              "testClassificationData.json", "testModelName", None)
     predictModel("testTrainingData.json", "testModelName", None)

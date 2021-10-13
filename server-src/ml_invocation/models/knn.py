@@ -20,7 +20,36 @@ def handleKNN(command, inputData, classificationData, modelName, parameters):
 
 def createModel(trainingData, classificationData, modelName, parameters):
     try:
-        classifer = neighbors.KNeighborsClassifier()
+        print("API input parameters: "+str(parameters))
+        jsonParameters = json.loads(parameters)
+
+        modelParams = {}
+
+        print("reached")
+
+        knnNNearestNeighbors = jsonParameters.get('knnNNearestNeighbors')
+        if(knnNNearestNeighbors != None):
+            print("N nearest neighbors parameter present")
+            modelParams['n_neighbors'] = int(knnNNearestNeighbors)
+            print("Successfully read N nearest neighbors parameter")
+
+        knnWeightsFunction = jsonParameters.get('knnWeightsFunction')
+        if(knnWeightsFunction != None):
+            print('KNN Weights Function parameter present')
+            modelParams['weights'] = str(knnWeightsFunction)
+            print('Successfully read KNN Weights Function parameter')
+
+        knnAlgorithm = jsonParameters.get('knnAlgorithm')
+        if(knnAlgorithm != None):
+            print('KNN Algorithm parameter present')
+            modelParams['algorithm'] = str(knnAlgorithm)
+            print('Successfully read KNN Algorithm parameter')
+
+        # print("hidden layers: " + str(modelParams['hidden_layer_sizes']))
+        # print("max iterations: " + str(modelParams['max_iter']))
+
+        print("Constructed parameters: " + str(modelParams))
+        classifer = neighbors.KNeighborsClassifier(**modelParams)
         print("Created KNN classifier")
         # The commented lines for trainingDataSet and classificationDataSet
         # are used for retrieving the files locally for TESTING purposes only
