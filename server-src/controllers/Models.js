@@ -30,6 +30,19 @@ module.exports.trainModel = function trainModel (req, res, next) {
     });
 };
 
+module.exports.testModel = function testModel (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
+  var body = req.swagger.params['body'].value;
+  Models.testModel(req.user.id, body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.deleteModel = function deleteModel (req, res, next) {
   if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
 
