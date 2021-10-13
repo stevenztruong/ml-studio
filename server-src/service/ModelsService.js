@@ -87,19 +87,12 @@ exports.deleteModel = function(modelId) {
  * modelId Long ID of model to return
  * returns Model
  **/
-exports.getModelById = function(modelId) {
+exports.getModelById = function(modelId, userId) {
   return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "name" : "name",
-  "id" : 0,
-  "params" : "{}"
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
+    dbConnection.query(`SELECT * FROM Model WHERE id = ${modelId} AND userId = ${userId}`, function (error, results, fields) {
+      if (error) throw error;
+      resolve(results);
+    });
   });
 }
 
