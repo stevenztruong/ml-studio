@@ -28,6 +28,7 @@ export default class ModelDetails extends React.Component {
     let splitPath = window.location.pathname.split('/');
     let modelId = splitPath[splitPath.length - 1];
     if (modelId) {
+      this.setState({ modelId: modelId });
       await axios.get(
         process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + modelId,
         {
@@ -194,6 +195,24 @@ export default class ModelDetails extends React.Component {
     })
   }
 
+  deleteModelApiCall = async (id) => {
+    await axios.delete(
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + id,
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      }
+    ).then(res => {
+      this.setState({ showLoading: false });
+      alert("Successfully deleted model id: " + id);
+      window.location = '/';
+    }).catch(error => {
+      this.setState({ showLoading: false });
+      alert(error);
+    })
+  }
+
   updateTrainingData = e => {
     this.setState({
       trainingData: e.target.files[0],
@@ -277,8 +296,11 @@ export default class ModelDetails extends React.Component {
     this.setState({ showLoading: true });
   }
 
-  handleDelete = () => {
+  handleDelete = async () => {
     this.setState({ showLoading: true });
+    await this.deleteModelApiCall(this.state.modelId);
+    this.setState({ showLoading: false });
+
   }
 
   handleDeploy = () => {
@@ -290,7 +312,7 @@ export default class ModelDetails extends React.Component {
       <div>
         <NavBar />
         <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
-          <h3>Model: {this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
+          <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
@@ -330,7 +352,12 @@ export default class ModelDetails extends React.Component {
                       accept="application/JSON" onChange={this.updateTrainingClassificationData} required />
                   </div>
                 </div>
-                <Button onClick={this.uploadTrainingAndClassificationData}>Train</Button>
+                <Button
+                  onClick={this.uploadTrainingAndClassificationData}
+                  disabled={!(this.state.trainingData && this.state.trainingClassificationData)}
+                >
+                  Train
+                </Button>
               </div>
             </Card>
             <Card style={{ padding: "2%", marginBottom: "5%" }}>
@@ -351,7 +378,12 @@ export default class ModelDetails extends React.Component {
                       accept="application/JSON" onChange={this.updateTestingClassificationData} required />
                   </div>
                 </div>
-                <Button onClick={this.uploadTestingAndClassificationData}>Test</Button>
+                <Button
+                  onClick={this.uploadTestingAndClassificationData}
+                  disabled={!(this.state.testingData && this.state.testingClassificationData)}
+                >
+                  Test
+                </Button>
               </div>
             </Card>
             <Card style={{ padding: "2%", marginBottom: "5%" }}>
@@ -364,7 +396,12 @@ export default class ModelDetails extends React.Component {
                     id="uploadpredictionData"
                     accept="application/JSON" onChange={this.updatePredictionData} required />
                 </div>
-                <Button onClick={this.uploadPredictionData}>Predict</Button>
+                <Button
+                  disabled={!(this.state.predictionData)}
+                  onClick={this.uploadPredictionData}
+                >
+                  Predict
+                </Button>
               </div>
             </Card>
           </div>
@@ -375,6 +412,7 @@ export default class ModelDetails extends React.Component {
           <Button onClick={this.handleDeploy}>Deploy</Button>
         </div>
         <Backdrop
+          style={{ zIndex: 1 }}
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={this.state.showLoading}
         >
