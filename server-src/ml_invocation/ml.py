@@ -7,10 +7,12 @@ from svm import handleSVM
 from decisionTree import handleDecisionTree
 from mlp import handleMLP
 from knn import handleKNN
+from randomForest import handleRandomForest
+from sgd import handleSGD
+from adaboost import handleAdaboost
 # Uncomment the line below if running this file as a python script
 # without the node.js server calling it
 # sys.path.append('models')
-
 
 def run(command, modelType, trainingData, classificationData, modelName, parameters):
     print("Run Model Type: " + str(modelType))
@@ -36,6 +38,21 @@ def run(command, modelType, trainingData, classificationData, modelName, paramet
         sys.stdout.flush()
     elif(modelType == models_types.KNN):
         result = handleKNN(
+            command, trainingData, classificationData, modelName, parameters)
+        print({'result': result})
+        sys.stdout.flush()
+    elif(modelType == models_types.RANDOM_FOREST):
+        result = handleRandomForest(
+            command, trainingData, classificationData, modelName, parameters)
+        print({'result': result})
+        sys.stdout.flush()
+    elif(modelType == models_types.SGD):
+        result = handleRandomForest(
+            command, trainingData, classificationData, modelName, parameters)
+        print({'result': result})
+        sys.stdout.flush()
+    elif(modelType == models_types.ADABOOST):
+        result = handleAdaboost(
             command, trainingData, classificationData, modelName, parameters)
         print({'result': result})
         sys.stdout.flush()
