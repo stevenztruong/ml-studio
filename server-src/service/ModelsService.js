@@ -19,7 +19,7 @@ exports.createModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
     // dbConnection.connect();
-    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType) VALUES (${userId}, "${body.modelName}", "${body.modelType}")`, function (error, results, fields) {
+    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType, parms) VALUES (${userId}, "${body.modelName}", "${body.modelType}", '${JSON.stringify(body.parameters)}')`, function (error, results, fields) {
       if (error) throw error;
       console.log(results);
       console.log(fields);
@@ -91,6 +91,8 @@ exports.getModelById = function(modelId, userId) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`SELECT * FROM Model WHERE id = ${modelId} AND userId = ${userId}`, function (error, results, fields) {
       if (error) throw error;
+      if (results.length > 0)
+        results[0].parms = JSON.parse(results[0].parms);
       resolve(results);
     });
   });
@@ -133,6 +135,9 @@ exports.getModels = function(userId) {
     // });
 
     dbConnection.query(`SELECT * FROM Model WHERE userId = ${userId}`, function (error, results, fields) {
+      lo.forEach (results, function(model) {
+        model.parms = JSON.parse(model.parms);
+      });
       if (error) throw error;
       resolve(results);
     });

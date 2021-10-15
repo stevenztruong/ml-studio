@@ -455,7 +455,6 @@ definitions:
         type: "string"
       params:
         type: "object"
-        properties: {}
       trainingData:
         type: "string"
         description: "Model's traing data file's name"
