@@ -58,7 +58,7 @@ paths:
       description: ""
       operationId: "downloadData"
       produces:
-      - multipart/form-data
+      - application/octet-stream
       parameters:
       - in: path
         name: fileName
@@ -68,6 +68,8 @@ paths:
       responses:
         "200":
           description: "Ok"
+          schema:
+            type: file
         "400":
           description: "Bad Request"
         "401":
