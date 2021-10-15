@@ -61,6 +61,33 @@ exports.trainModel = function(userId, body) {
   });
 }
 
+exports.predictModel = function(userId, body) {
+  return new Promise(function(resolve, reject) {
+    console.log(body);
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
+    childPython.stdout.on('data', (data) => {
+        const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
+        for (let line of newData) {
+          if (line.includes("Return object:")) {
+            resolve(line);
+            break;
+          }
+        }
+        console.log(`stdout: ${data}`);
+    })
+
+    childPython.stderr.on('data', (data) => {
+        resolve();
+        console.error(`stderr: ${data}`);
+    })
+
+    childPython.on('close', (code) => {
+        resolve();
+        console.log(`child process exited with code: ${code}`);
+    })
+  });
+}
+
 /**
  * Delete a model
  *
@@ -164,6 +191,7 @@ exports.updateModel = function(modelId,body) {
 
 exports.uploadData = function(req) {
   const files = req.files;
+  console.log(files)
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
@@ -190,7 +218,8 @@ exports.uploadData = function(req) {
 
     resolve({
       training_data: files.trainingData.name,
-      classification_data: files.classificationData.name
+      classification_data: files.classificationData.name,
+      prediction_data: files.predictionData.name
     });
   });
 }
