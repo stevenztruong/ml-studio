@@ -7,7 +7,12 @@ import {
   CircularProgress,
   Card,
   Button,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@material-ui/core';
 
 import NavBar from './NavBar';
@@ -20,12 +25,14 @@ export default class ModelDetails extends React.Component {
       selectedModel: 'svm',
       modelName: "",
       showLoading: true,
-      apiResult: {}
+      apiResult: {},
+      showTestResult: false,
+      testResult: ''
     };
   }
 
   componentDidMount = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let splitPath = window.location.pathname.split('/');
     let modelId = splitPath[splitPath.length - 1];
     if (modelId) {
@@ -38,9 +45,9 @@ export default class ModelDetails extends React.Component {
           }
         }
       ).then(async res => {
-        this.setState({showLoading: false, apiResult: res?.data })
+        this.setState({ showLoading: false, apiResult: res?.data })
       }).catch(error => {
-        this.setState({showLoading: false});
+        this.setState({ showLoading: false });
         alert(error);
       })
     }
@@ -55,7 +62,7 @@ export default class ModelDetails extends React.Component {
   }
 
   uploadTrainingAndClassificationData = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let form_data = new FormData();
     form_data.append('trainingData', this.state.trainingData)
     form_data.append('classificationData', this.state.trainingClassificationData)
@@ -70,17 +77,17 @@ export default class ModelDetails extends React.Component {
       },
     ).then(async res => {
       await this.trainAgainstModelApiCall(
-        res.data.training_data,
-        res.data.classification_data
+        res.data.trainingData,
+        res.data.classificationData
       );
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   trainAgainstModelApiCall = async (trainingDataPath, classificationDataPath) => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/training',
@@ -98,17 +105,17 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert("Training model in progress!")
       // window.location = '/';
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   uploadTestingAndClassificationData = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let form_data = new FormData();
     form_data.append('trainingData', this.state.testingData)
     form_data.append('classificationData', this.state.testingClassificationData)
@@ -123,17 +130,17 @@ export default class ModelDetails extends React.Component {
       },
     ).then(async res => {
       await this.testAgainstModelApiCall(
-        res.data.training_data,
-        res.data.classification_data
+        res.data.trainingData,
+        res.data.classificationData
       );
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   testAgainstModelApiCall = async (testingDataPath, classificationDataPath) => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/testing',
@@ -151,18 +158,18 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({showLoading: false});
-      alert("Testing model in progress!")
+      let processedResString = JSON.parse(res.data.split("Return object: ")[1]);
+      this.setState({ showLoading: false, showTestResult: true, testResult: processedResString.score });
       // window.location = '/';
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
 
   uploadPredictionData = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let form_data = new FormData();
     form_data.append('predictionData', this.state.predictionData)
 
@@ -180,13 +187,13 @@ export default class ModelDetails extends React.Component {
         res.data.prediction_data,
       );
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   predictAgainstModelApiCall = async (predictionDataPath) => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to predict against the model and pass correct parameters
       // process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
@@ -203,11 +210,11 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert("Model creation in progress!")
       window.location = '/';
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
@@ -335,12 +342,20 @@ export default class ModelDetails extends React.Component {
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
             <Card style={{ height: '50%', padding: "2%" }}>
-              <h3>Details:</h3>
+              <h3>Details: </h3>
               <p>Name: {this?.state?.apiResult?.modelName} </p>
               <p>ID: {this?.state?.apiResult?.id}</p>
               {
                 this?.state?.apiResult?.parms ?
-                  <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>
+                  // <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>
+                  <p>
+                    Parameters:
+                    {Object.keys(this?.state?.apiResult?.parms).map((keyName, i) => (
+                      <li key={i}>
+                        {keyName}: {this?.state?.apiResult?.parms[keyName]}
+                      </li>
+                    ))}
+                  </p>
                   :
                   <p>Parameters: N/A</p>
               }
@@ -436,6 +451,24 @@ export default class ModelDetails extends React.Component {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
+        <Dialog
+          open={this.state.showTestResult}
+          onClose={this.handleDeleteModelClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Test score:"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {this.state.testResult}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => { this.setState({ showTestResult: false }) }} autoFocus>Close</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

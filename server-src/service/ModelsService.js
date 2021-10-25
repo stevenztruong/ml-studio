@@ -73,17 +73,17 @@ exports.testModel = function(userId, body) {
           resolve(line);
           break;
         }
-      }      
+      }
       console.log(`stdout: ${data}`);
     })
 
     childPython.stderr.on('data', (data) => {
-      resolve();      
+      resolve();
       console.error(`stderr: ${data}`);
     })
 
     childPython.on('close', (code) => {
-      resolve();      
+      resolve();
       console.log(`child process exited with code: ${code}`);
     })
   });
@@ -92,7 +92,7 @@ exports.testModel = function(userId, body) {
 exports.predictModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
-    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, {}, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, '{}', `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
         const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
         for (let line of newData) {
