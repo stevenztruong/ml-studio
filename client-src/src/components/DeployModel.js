@@ -162,12 +162,11 @@ export default class DeployModel extends React.Component {
 
 
   uploadPredictionData = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let form_data = new FormData();
-    form_data.append('predictionData', this.state.predictionData)
+    form_data.append('predictionData', this.state.predictionData);
 
     await axios.post(
-      // TODO: Upload data using correct path
       process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
       form_data,
       {
