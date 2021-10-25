@@ -67,17 +67,25 @@ exports.testModel = function(userId, body) {
     console.log(body);
     const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "testmodel", body.modelType, body.trainingData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
+      const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
+      for (let line of newData) {
+        if (line.includes("Return object:")) {
+          resolve(line);
+          break;
+        }
+      }      
+      console.log(`stdout: ${data}`);
     })
 
     childPython.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
+      resolve();      
+      console.error(`stderr: ${data}`);
     })
 
     childPython.on('close', (code) => {
-        console.log(`child process exited with code: ${code}`);
+      resolve();      
+      console.log(`child process exited with code: ${code}`);
     })
-    resolve();
   });
 }
 
