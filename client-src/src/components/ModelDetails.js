@@ -27,7 +27,8 @@ export default class ModelDetails extends React.Component {
       showLoading: true,
       apiResult: {},
       showTestResult: false,
-      testResult: ''
+      testResult: '',
+      showDeleteModal: false
     };
   }
 
@@ -320,11 +321,18 @@ export default class ModelDetails extends React.Component {
     this.setState({ showLoading: true });
   }
 
+  showDeleteModalHandler = () => {
+    this.setState({showDeleteModal: true});
+  }
+
+  handleDeleteModelClose = () => {
+    this.setState({showDeleteModal: false});
+  }
+
   handleDelete = async () => {
     this.setState({ showLoading: true });
     await this.deleteModelApiCall(this.state.modelId);
     this.setState({ showLoading: false });
-
   }
 
   handleDeploy = () => {
@@ -441,7 +449,7 @@ export default class ModelDetails extends React.Component {
         </div>
         <div style={{ padding: "2%" }}>
           <Button onClick={this.handleDownload}>Download</Button>
-          <Button onClick={this.handleDelete}>Delete</Button>
+          <Button onClick={this.showDeleteModalHandler}>Delete</Button>
           <Button onClick={this.handleDeploy}>Deploy</Button>
         </div>
         <Backdrop
@@ -467,6 +475,25 @@ export default class ModelDetails extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => { this.setState({ showTestResult: false }) }} autoFocus>Close</Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={this.state.showDeleteModal}
+          onClose={this.handleDeleteModelClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Confirm model deletion"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Would you like to delete the selected model? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDeleteModelClose}>Cancel</Button>
+            <Button onClick={this.handleDelete} style={{backgroundColor: 'red', color: 'white'}} autoFocus>Delete</Button>
           </DialogActions>
         </Dialog>
       </div>
