@@ -84,7 +84,7 @@ exports.testModel = function(userId, body) {
 exports.predictModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
-    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, {}, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
         const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
         for (let line of newData) {
