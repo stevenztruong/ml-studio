@@ -317,6 +317,73 @@ export default class AddModel extends React.Component {
     )
   }
 
+  renderKnnParameters = () => {
+    return (
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="knnNNearestNeighbors"
+            onChange={(e) => { this.setParameters('knnNNearestNeighbors', e.target.value) }}
+            label="N nearest neighbors"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.knnNNearestNeighbors}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Algorithm:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.knnAlgorithm} onChange={(e) => this.setParameters('knnAlgorithm', e.target.value)}>
+              <FormControlLabel value="ball_tree" control={<Radio />} label="Ball Tree" />
+              <FormControlLabel value="kd_tree" control={<Radio />} label="KD Tree" />
+              <FormControlLabel value="brute" control={<Radio />} label="Brute" />
+              <FormControlLabel value="auto" control={<Radio />} label="Auto" />
+            </RadioGroup>
+          </FormControl>
+        </div>
+        <div style={{ padding: "2%" }}>
+          <FormControl component="fieldset">
+            <FormLabel component="legend">Weights function:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.knnWeightsFunction} onChange={(e) => this.setParameters('knnWeightsFunction', e.target.value)}>
+              <FormControlLabel value="uniform" control={<Radio />} label="Uniform" />
+              <FormControlLabel value="distance" control={<Radio />} label="Distance" />
+            </RadioGroup>
+          </FormControl>
+        </div>
+      </div>
+    )
+  }
+
+  renderRandomForestParameters = () => {
+    return (
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="randomForestNumEstimators"
+            onChange={(e) => { this.setParameters('randomForestNumEstimators', e.target.value) }}
+            label="Number of estimators"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.randomForestNumEstimators}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="randomForestMaxDepth"
+            onChange={(e) => { this.setParameters('randomForestMaxDepth', e.target.value) }}
+            label="Maximum depth"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.randomForestMaxDepth}
+          />
+        </div>
+      </div>
+    )
+  }
+
   renderSGDParameters = () => {
     return (
       <div>
