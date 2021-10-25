@@ -2,6 +2,7 @@
 
 const { spawn } = require('child_process');
 const lo = require('lodash');
+const fs = require('fs');
 const AWS = require('aws-sdk');
 const BUCKET_NAME = 'mlstudio-bucket';
 const IAM_USER_KEY = 'AKIAQR7PIWMNIAGTK2H3';
@@ -46,6 +47,25 @@ exports.trainModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
     const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "trainmodel", body.modelType, body.trainingData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
+    childPython.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    })
+
+    childPython.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    })
+
+    childPython.on('close', (code) => {
+        console.log(`child process exited with code: ${code}`);
+    })
+    resolve();
+  });
+}
+
+exports.testModel = function(userId, body) {
+  return new Promise(function(resolve, reject) {
+    console.log(body);
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "testmodel", body.modelType, body.trainingData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
     })
@@ -224,6 +244,7 @@ exports.uploadData = function(req) {
 }
 
 exports.downloadData = function(req) {
+  const fileName = req.swagger.params['fileName'].value;
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
@@ -233,18 +254,10 @@ exports.downloadData = function(req) {
     s3bucket.createBucket(function () {
       var params = {
         Bucket: `${BUCKET_NAME}/${req.user.id}`, // ex. /mlstudio-bucket/56/
-        Key: req.swagger.params['fileName'].value
+        Key: fileName
       };
-      s3bucket.getObject(params, function (err, data) {
-        if (err) {
-          console.log('error in callback');
-          console.log(err);
-          return resolve({"status":"Internal Server Error","statusCode":500});
-        }
-        console.log('success');
-        console.log(data);
-        return resolve({ File: data.body, statusCode: 200});
-      });
+      var fileStream = s3bucket.getObject(params).createReadStream();
+      return resolve({ fileStream });
     });
   });
 }

@@ -63,7 +63,7 @@ paths:
       description: ""
       operationId: "downloadData"
       produces:
-      - multipart/form-data
+      - application/octet-stream
       parameters:
       - in: path
         name: fileName
@@ -73,6 +73,8 @@ paths:
       responses:
         "200":
           description: "Ok"
+          schema:
+            type: file
         "400":
           description: "Bad Request"
         "401":
@@ -170,6 +172,40 @@ paths:
         - "write:models"
         - "read:models"
       x-swagger-router-controller: "Models"
+  /testing:
+    post:
+      tags:
+      - "models"
+      summary: "Test against a model"
+      description: ""
+      operationId: "testModel"
+      consumes:
+      - "application/json"
+      - "application/xml"
+      produces:
+      - "application/xml"
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Model object that needs to be tested"
+        required: true
+        schema:
+          $ref: "#/definitions/Model"
+      responses:
+        "200":
+          description: "Ok"
+        "400":
+          description: "Bad Request"
+        "401":
+          description: "Unauthorized"
+        "404":
+          description: "Not Found"
+      security:
+      - user_auth:
+        - "write:models"
+        - "read:models"
+      x-swagger-router-controller: "Models"
   /predicting:
     post:
       tags:
@@ -203,7 +239,7 @@ paths:
       - user_auth:
         - "write:models"
         - "read:models"
-      x-swagger-router-controller: "Models"      
+      x-swagger-router-controller: "Models"
   /models/{modelId}:
     get:
       tags:
@@ -502,4 +538,4 @@ definitions:
         description: "Model's classification data file's name"
       predictionData:
         type: "string"
-        description: "Model's prediction data file's name"      
+        description: "Model's prediction data file's name"
