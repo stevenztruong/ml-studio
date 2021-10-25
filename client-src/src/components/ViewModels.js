@@ -9,6 +9,11 @@ import {
   Button,
   Backdrop,
   CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@material-ui/core/'
 import axios from 'axios';
 
@@ -17,7 +22,9 @@ export default class ModelDashboard extends React.Component {
     super(props);
     this.state = {
       data: [],
-      showLoading: true
+      showLoading: true,
+      showDeleteModal: false,
+      selectedDeleteModelId: '',
     };
   }
 
@@ -44,7 +51,8 @@ export default class ModelDashboard extends React.Component {
     })
   }
 
-  deleteModelApiCall = async (id) => {
+  deleteModelApiCall = async () => {
+    let id = this.state.selectedDeleteModelId;
     this.setState({ showLoading: true });
     await axios.delete(
       process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + id,
@@ -54,6 +62,7 @@ export default class ModelDashboard extends React.Component {
         }
       }
     ).then(res => {
+      this.setState({selectedDeleteModelId: '', showDeleteModal: false});
       this.getModelApiCall();
     }).catch(error => {
       alert(error);
@@ -62,6 +71,18 @@ export default class ModelDashboard extends React.Component {
 
   viewModelDetails = async (id) => {
     window.location = '/model/' + id;
+  }
+
+  deleteModel =  async (id) => {
+    this.setState({selectedDeleteModelId: id, showDeleteModal: true});
+  }
+
+  deployModel = async (id) => {
+    window.location = '/deploy/' + id;
+  }
+
+  handleDeleteModelClose = () => {
+    this.setState({selectedDeleteModelId: '', showDeleteModal: false});
   }
 
   render() {
@@ -89,12 +110,15 @@ export default class ModelDashboard extends React.Component {
                     <p>Model Name : {elem.modelName}</p>
                     <p>Model Type : {elem.modelType}</p>
                     <p>Status : {elem.status}</p>
-                    <p>Parms : {elem.parms}</p>
+                    <p>Parms : {JSON.stringify(elem.parms)}</p>
                     <Button style={{ marginLeft: "10px" }} onClick={() => { this.viewModelDetails(elem.id) }}>
                       Details
                     </Button>
-                    <Button style={{ marginLeft: "10px" }} onClick={() => { this.deleteModelApiCall(elem.id) }}>
+                    <Button style={{ marginLeft: "10px" }} onClick={() => { this.deleteModel(elem.id) }}>
                       Delete
+                    </Button>
+                    <Button style={{ marginLeft: "10px" }} onClick={() => { this.deployModel(elem.id) }}>
+                      Deploy
                     </Button>
                   </Typography>
                 </CardContent>
@@ -109,6 +133,25 @@ export default class ModelDashboard extends React.Component {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
+        <Dialog
+          open={this.state.showDeleteModal}
+          onClose={this.handleDeleteModelClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Confirm model deletion"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Would you like to delete the selected model? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDeleteModelClose}>Cancel</Button>
+            <Button onClick={this.deleteModelApiCall} style={{backgroundColor: 'red', color: 'white'}} autoFocus>Delete</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     )
   }
