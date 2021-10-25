@@ -2,6 +2,7 @@
 
 const { spawn } = require('child_process');
 const lo = require('lodash');
+const fs = require('fs');
 const AWS = require('aws-sdk');
 const BUCKET_NAME = 'mlstudio-bucket';
 const IAM_USER_KEY = 'AKIAQR7PIWMNIAGTK2H3';
@@ -19,7 +20,7 @@ exports.createModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
     // dbConnection.connect();
-    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType) VALUES (${userId}, "${body.modelName}", "${body.modelType}")`, function (error, results, fields) {
+    dbConnection.query(`INSERT INTO Model (userId, modelName, modelType, parms) VALUES (${userId}, "${body.modelName}", "${body.modelType}", '${JSON.stringify(body.parameters)}')`, function (error, results, fields) {
       if (error) throw error;
       console.log(results);
       console.log(fields);
@@ -80,6 +81,33 @@ exports.testModel = function(userId, body) {
   });
 }
 
+exports.predictModel = function(userId, body) {
+  return new Promise(function(resolve, reject) {
+    console.log(body);
+    const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
+    childPython.stdout.on('data', (data) => {
+        const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
+        for (let line of newData) {
+          if (line.includes("Return object:")) {
+            resolve(line);
+            break;
+          }
+        }
+        console.log(`stdout: ${data}`);
+    })
+
+    childPython.stderr.on('data', (data) => {
+        resolve();
+        console.error(`stderr: ${data}`);
+    })
+
+    childPython.on('close', (code) => {
+        resolve();
+        console.log(`child process exited with code: ${code}`);
+    })
+  });
+}
+
 /**
  * Delete a model
  *
@@ -110,6 +138,8 @@ exports.getModelById = function(modelId, userId) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`SELECT * FROM Model WHERE id = ${modelId} AND userId = ${userId}`, function (error, results, fields) {
       if (error) throw error;
+      if (results.length > 0)
+        results[0].parms = JSON.parse(results[0].parms);
       resolve(results);
     });
   });
@@ -152,6 +182,9 @@ exports.getModels = function(userId) {
     // });
 
     dbConnection.query(`SELECT * FROM Model WHERE userId = ${userId}`, function (error, results, fields) {
+      lo.forEach (results, function(model) {
+        model.parms = JSON.parse(model.parms);
+      });
       if (error) throw error;
       resolve(results);
     });
@@ -178,6 +211,7 @@ exports.updateModel = function(modelId,body) {
 
 exports.uploadData = function(req) {
   const files = req.files;
+  console.log(files)
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
@@ -204,12 +238,14 @@ exports.uploadData = function(req) {
 
     resolve({
       training_data: files.trainingData.name,
-      classification_data: files.classificationData.name
+      classification_data: files.classificationData.name,
+      prediction_data: files.predictionData.name
     });
   });
 }
 
 exports.downloadData = function(req) {
+  const fileName = req.swagger.params['fileName'].value;
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
@@ -219,18 +255,10 @@ exports.downloadData = function(req) {
     s3bucket.createBucket(function () {
       var params = {
         Bucket: `${BUCKET_NAME}/${req.user.id}`, // ex. /mlstudio-bucket/56/
-        Key: req.swagger.params['fileName'].value
+        Key: fileName
       };
-      s3bucket.getObject(params, function (err, data) {
-        if (err) {
-          console.log('error in callback');
-          console.log(err);
-          return resolve({"status":"Internal Server Error","statusCode":500});
-        }
-        console.log('success');
-        console.log(data);
-        return resolve({ File: data.body, statusCode: 200});
-      });
+      var fileStream = s3bucket.getObject(params).createReadStream();
+      return resolve({ fileStream });
     });
   });
 }

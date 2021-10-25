@@ -3,6 +3,8 @@
 const utils = require('../utils/writer.js');
 const Models = require('../service/ModelsService');
 const DISABLE_AUTH = process.env.DISABLE_AUTH === 'true';
+const fs = require('fs');
+
 
 module.exports.createModel = function createModel (req, res, next) {
   if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
@@ -35,6 +37,19 @@ module.exports.testModel = function testModel (req, res, next) {
 
   var body = req.swagger.params['body'].value;
   Models.testModel(req.user.id, body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.predictModel = function predictModel (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
+  var body = req.swagger.params['body'].value;
+  Models.predictModel(req.user.id, body)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -113,7 +128,11 @@ module.exports.downloadData = function downloadData (req, res, next) {
 
   Models.downloadData(req)
     .then(function (response) {
-      utils.writeJson(res, response);
+      res.writeHead(200, {
+        "Content-Type": "application/octet-stream",
+        "Content-Disposition": "attachment; filename=" + req.swagger.params['fileName'].value
+      });
+      response['fileStream'].pipe(res);
     })
     .catch(function (response) {
       utils.writeJson(res, response);

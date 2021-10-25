@@ -8,7 +8,9 @@ import {
   Card,
   Button,
   TextField,
-  Checkbox
+  Checkbox,
+  Backdrop,
+  CircularProgress,
 } from '@material-ui/core';
 
 import NavBar from './NavBar';
@@ -21,6 +23,7 @@ export default class AddModel extends React.Component {
       selectedModel: 'SVM',
       modelName: "",
       selectedParameters: {},
+      showLoading: false,
     };
   }
 
@@ -32,6 +35,7 @@ export default class AddModel extends React.Component {
   }
 
   uploadData = async () => {
+    this.setState({ showLoading: true });
     let form_data = new FormData();
     form_data.append('trainingData', this.state.trainingData)
     form_data.append('classificationData', this.state.classificationData)
@@ -50,11 +54,13 @@ export default class AddModel extends React.Component {
         res.data.classification_data
       );
     }).catch(error => {
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   createModelApiCall = async (trainingDataPath, classificationDataPath) => {
+    this.setState({ showLoading: true });
     let filteredSelectedParameters = Object.fromEntries(Object.entries(this.state.selectedParameters).filter(([_, val]) => val != ''));
     if (this.state.selectedModel === 'Multinomial Naive Bayes') {
       if (!filteredSelectedParameters?.naiveBayesGaussianFitPrior) {
@@ -78,9 +84,11 @@ export default class AddModel extends React.Component {
         }
       }
     ).then(res => {
+      this.setState({ showLoading: false });
       alert("Model creation in progress!")
       window.location = '/';
     }).catch(error => {
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
@@ -103,10 +111,13 @@ export default class AddModel extends React.Component {
         <TextField
           style={{ width: '70%' }}
           id="modelName"
-          onChange={(e) => { this.setState({ modelName: e.target.value }) }}
+          onChange={(e) => { !(e.target.value.length > 20) && this.setState({ modelName: e.target.value }) }}
           label="Model Name"
           variant="outlined"
           value={this.state.modelName}
+          error={this.state?.modelName?.length >= 20}
+          helperText={"Length cannot exceed 20 characters"}
+          required
         />
       </div>
     )
@@ -136,6 +147,15 @@ export default class AddModel extends React.Component {
     }
     else if (this.state.selectedModel === 'KNN') {
       return this.renderKnnParameters();
+    }
+    else if (this.state.selectedModel === 'Random Forest') {
+      return this.renderRandomForestParameters();
+    }
+    else if (this.state.selectedModel === 'SGD') {
+      return this.renderSGDParameters();
+    }
+    else if (this.state.selectedModel === 'Adaboost') {
+      return this.renderAdaboostParameters();
     }
     else {
       return <div />;
@@ -297,37 +317,89 @@ export default class AddModel extends React.Component {
     )
   }
 
-  renderKnnParameters = () => {
+  renderSGDParameters = () => {
     return (
       <div>
         <div style={{ padding: "2%" }}>
           <TextField
             style={{ width: '70%' }}
-            id="knnNNearestNeighbors"
-            onChange={(e) => { this.setParameters('knnNNearestNeighbors', e.target.value) }}
-            label="Nearest Neighbors Count"
+            id="sgdAlpha"
+            onChange={(e) => { this.setParameters('sgdAlpha', e.target.value) }}
+            label="Alpha"
             variant="outlined"
             type="number"
-            value={this.state?.selectedParameters?.knnNNearestNeighbors}
+            value={this.state?.selectedParameters?.sgdAlpha}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="sgdMaxIter"
+            onChange={(e) => { this.setParameters('sgdMaxIter', e.target.value) }}
+            label="Max iterations"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.sgdMaxIter}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="sgdEpsilon"
+            onChange={(e) => { this.setParameters('sgdEpsilon', e.target.value) }}
+            label="Epsilon"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.sgdEpsilon}
           />
         </div>
         <div style={{ padding: "2%" }}>
           <FormControl component="fieldset">
-            <FormLabel component="legend">Weights function:</FormLabel>
-            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.knnWeightsFunction} onChange={(e) => this.setParameters('knnWeightsFunction', e.target.value)}>
-              <FormControlLabel value="uniform" control={<Radio />} label="Uniform" />
-              <FormControlLabel value="distance" control={<Radio />} label="Distance" />
+            <FormLabel component="legend">Learning rate:</FormLabel>
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.sgdLearningRate} onChange={(e) => this.setParameters('sgdLearningRate', e.target.value)}>
+              <FormControlLabel value="constant" control={<Radio />} label="Constant" />
+              <FormControlLabel value="optimal" control={<Radio />} label="Optimal" />
+              <FormControlLabel value="invscaling" control={<Radio />} label="Invscaling" />
+              <FormControlLabel value="adaptive" control={<Radio />} label="Adaptive" />
             </RadioGroup>
           </FormControl>
+        </div>
+      </div>
+    )
+  }
+
+  renderAdaboostParameters = () => {
+    return (
+      <div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="adaboostEstimators"
+            onChange={(e) => { this.setParameters('adaboostEstimators', e.target.value) }}
+            label="Number of Estimators"
+            variant="outlined"
+            type="number"
+            value={this.state?.selectedParameters?.adaboostEstimators}
+          />
+        </div>
+        <div style={{ padding: "2%" }}>
+          <TextField
+            style={{ width: '70%' }}
+            id="adaboostLearningRate"
+            onChange={(e) => { (e.target.value === '' || (e.target.value >= 0 && e.target.value < 1)) && this.setParameters('adaboostLearningRate', e.target.value) }}
+            label="Learning rate"
+            variant="outlined"
+            type="number"
+            helperText='Value is between 0 and 1 (noninclusive)'
+            value={this.state?.selectedParameters?.adaboostLearningRate}
+          />
         </div>
         <div style={{ padding: "2%" }}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Algorithm:</FormLabel>
-            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.knnAlgorithm} onChange={(e) => this.setParameters('knnAlgorithm', e.target.value)}>
-              <FormControlLabel value="auto" control={<Radio />} label="Auto" />
-              <FormControlLabel value="ball_tree" control={<Radio />} label="Ball Tree" />
-              <FormControlLabel value="kd_tree" control={<Radio />} label="KD Tree" />
-              <FormControlLabel value="brute" control={<Radio />} label="Brute" />
+            <RadioGroup aria-label="model" name="model" value={this.state?.selectedParameters?.adaboostAlgorithm} onChange={(e) => this.setParameters('adaboostAlgorithm', e.target.value)}>
+              <FormControlLabel value="SAMME" control={<Radio />} label="SAMME" />
+              <FormControlLabel value="SAMME.R" control={<Radio />} label="SAMME.R" />
             </RadioGroup>
           </FormControl>
         </div>
@@ -351,6 +423,9 @@ export default class AddModel extends React.Component {
                   <FormControlLabel value="Decision Tree Classifier" control={<Radio />} label="Decision Tree Classifier" />
                   <FormControlLabel value="Multi-layer Perceptron Classifier" control={<Radio />} label="Multi-layer Perceptron Classifier" />
                   <FormControlLabel value="KNN" control={<Radio />} label="KNN" />
+                  <FormControlLabel value="Random Forest" control={<Radio />} label="Random Forest Classifier" />
+                  <FormControlLabel value="SGD" control={<Radio />} label="SGD" />
+                  <FormControlLabel value="Adaboost" control={<Radio />} label="Adaboost" />
                 </RadioGroup>
               </FormControl>
             </Card>
@@ -380,9 +455,28 @@ export default class AddModel extends React.Component {
           </div>
 
           <div style={{ width: '33%', padding: "2%" }}>
-            <Button onClick={this.uploadData}>Create Model</Button>
+            <Button
+              onClick={this.uploadData}
+              disabled={
+                !(
+                  this.state.modelName
+                  && this.state.modelName != ''
+                  && this.state.trainingData
+                  && this.state.classificationData
+                )
+              }
+            >
+              Create Model
+            </Button>
           </div>
         </div>
+        <Backdrop
+          style={{ zIndex: 1 }}
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={this.state.showLoading}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     );
   }
