@@ -191,7 +191,10 @@ exports.updateModel = function(modelId,body) {
 
 exports.uploadData = function(req) {
   const files = req.files;
-  console.log(files)
+  var results = new Object;
+  lo.forEach(files, function(value, key) {
+    results[key] = value.name;
+  });
   const s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
     secretAccessKey: IAM_USER_SECRET,
@@ -216,11 +219,7 @@ exports.uploadData = function(req) {
       });
     });
 
-    resolve({
-      training_data: files.trainingData.name,
-      classification_data: files.classificationData.name,
-      prediction_data: files.predictionData.name
-    });
+    resolve(results);
   });
 }
 
