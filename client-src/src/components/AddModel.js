@@ -50,8 +50,8 @@ export default class AddModel extends React.Component {
       },
     ).then(async res => {
       await this.createModelApiCall(
-        res.data.training_data,
-        res.data.classification_data
+        res.data.trainingData,
+        res.data.classificationData
       );
     }).catch(error => {
       this.setState({ showLoading: false });

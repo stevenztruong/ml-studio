@@ -26,6 +26,7 @@ def uploadFile(filePath, objName):
         return False
 
 def getFile(objName):
+    print("object name: " + str(objName))
     io_stream = io.BytesIO()
     try:
         client.download_fileobj('mlstudio-bucket', os.getenv("userId")+"/"+objName, io_stream)

@@ -110,7 +110,7 @@ export default class ModelDashboard extends React.Component {
                     <p>Model Name : {elem.modelName}</p>
                     <p>Model Type : {elem.modelType}</p>
                     <p>Status : {elem.status}</p>
-                    <p>Parms : {JSON.stringify(elem.parms)}</p>
+                    {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
                     <Button style={{ marginLeft: "10px" }} onClick={() => { this.viewModelDetails(elem.id) }}>
                       Details
                     </Button>

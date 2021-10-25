@@ -8,6 +8,7 @@ import s3Util
 
 
 def handleSVM(command, inputData, classificationData, modelName, parameters):
+    print("input data: " + str(inputData))
     if(command == command_types.CREATE_MODEL):
         return createModel(inputData, classificationData, modelName, parameters)
     elif(command == command_types.TRAIN_MODEL):
