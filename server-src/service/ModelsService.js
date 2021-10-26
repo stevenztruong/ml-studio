@@ -20,6 +20,7 @@ exports.createModel = function(userId, body) {
   return new Promise(function(resolve, reject) {
     console.log(body);
     // dbConnection.connect();
+    // TODO: add constraint on modelName
     dbConnection.query(`INSERT INTO Model (userId, modelName, modelType, parms) VALUES (${userId}, "${body.modelName}", "${body.modelType}", '${JSON.stringify(body.parameters)}')`, function (error, results, fields) {
       if (error) throw error;
       console.log(results);
@@ -246,7 +247,7 @@ exports.uploadData = function(req) {
         });
       });
     });
-
+    // TODO: Error handling
     resolve(results);
   });
 }
