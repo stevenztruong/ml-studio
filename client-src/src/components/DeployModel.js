@@ -7,7 +7,12 @@ import {
   CircularProgress,
   Card,
   Button,
-  TextField
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@material-ui/core';
 
 import NavBar from './NavBar';
@@ -20,7 +25,9 @@ export default class DeployModel extends React.Component {
       selectedModel: 'svm',
       modelName: "",
       showLoading: true,
-      apiResult: {}
+      apiResult: {},
+      showPredictionResult: false,
+      predictionResult: ''
     };
   }
 
@@ -70,8 +77,8 @@ export default class DeployModel extends React.Component {
       },
     ).then(async res => {
       await this.trainAgainstModelApiCall(
-        res.data.training_data,
-        res.data.classification_data
+        res.data.trainingData,
+        res.data.classificationData
       );
     }).catch(error => {
       this.setState({showLoading: false});
@@ -123,8 +130,8 @@ export default class DeployModel extends React.Component {
       },
     ).then(async res => {
       await this.testAgainstModelApiCall(
-        res.data.training_data,
-        res.data.classification_data
+        res.data.trainingData,
+        res.data.classificationData
       );
     }).catch(error => {
       this.setState({showLoading: false});
@@ -176,7 +183,7 @@ export default class DeployModel extends React.Component {
       },
     ).then(async res => {
       await this.predictAgainstModelApiCall(
-        res.data.prediction_data,
+        res.data.predictionData,
       );
     }).catch(error => {
       this.setState({showLoading: false});
@@ -188,13 +195,13 @@ export default class DeployModel extends React.Component {
     this.setState({showLoading: true});
     await axios.post(
       // TODO: Call the API to predict against the model and pass correct parameters
-      // process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/predicting',
       {
         userId: 1,
-        modelType: this.state.selectedModel,
-        parameters: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
+        modelType: this.state.apiResult.modelType,
+        params: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
         predictionData: predictionDataPath,
-        modelName: this.state.modelName
+        modelName: this.state.apiResult.modelName,
       },
       {
         headers: {
@@ -202,9 +209,9 @@ export default class DeployModel extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({showLoading: false});
-      alert("Model creation in progress!")
-      window.location = '/';
+      let processedResString = JSON.parse(res.data.split("Return object: ")[1]);
+      this.setState({showLoading: false, showPredictionResult: true, predictionResult: processedResString.prediction});
+      // window.location = '/';
     }).catch(error => {
       this.setState({showLoading: false});
       alert(error);
@@ -421,6 +428,24 @@ export default class DeployModel extends React.Component {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
+        <Dialog
+          open={this.state.showPredictionResult}
+          onClose={this.handleDeleteModelClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Prediction result:"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {this.state.predictionResult}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => {this.setState({showPredictionResult: false})}} autoFocus>Close</Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }

@@ -8,6 +8,7 @@ import s3Util
 
 
 def handleAdaboost(command, inputData, classificationData, modelName, parameters):
+    print('In handle adaboost')
     if(command == command_types.CREATE_MODEL):
         return createModel(inputData, classificationData, modelName, parameters)
     elif(command == command_types.TRAIN_MODEL):
@@ -123,6 +124,7 @@ def testModel(testingData, classificationData, modelName, parameters):
 
 
 def predictModel(predictionData, modelName, parameters):
+    print('In adaboost predict model')
     try:
         classifer = utilities.getModel(modelName)
         print("Fetched stored Adaboost classifier")
