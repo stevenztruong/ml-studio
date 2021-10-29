@@ -38,7 +38,15 @@ export default class CreateAccount extends React.Component {
       if (res.data.status == "Authenticated") {
         sessionStorage.setItem('token', res.data.accessToken);
         this.setState({ showLoading: false });
-        window.location = '/';
+        if(sessionStorage.getItem('initialHref')) {
+          window.location = sessionStorage.getItem('initialHref');
+          sessionStorage.removeItem('initialHref');
+        }
+        else {
+          sessionStorage.removeItem('initialHref');
+          window.location = '/';
+
+        }
       }
       else {
         alert("Invalid credentials");

@@ -16,6 +16,7 @@ class NavBar extends React.Component {
 
   componentDidMount = () => {
     if (!sessionStorage.getItem('token')) {
+      sessionStorage.setItem('initialHref', window.location.href);
       window.location = '/login';
     }
   }
