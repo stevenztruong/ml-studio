@@ -138,3 +138,30 @@ module.exports.downloadData = function downloadData (req, res, next) {
       utils.writeJson(res, response);
     });
 };
+
+module.exports.createDeployment = function createDeployment (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
+  var body = req.swagger.params['body'].value;
+  var modelId = req.swagger.params['modelId'].value;
+  Models.createDeployment(req.user.id, modelId, body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.getDeployments = function getDeployments (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
+  var modelId = req.swagger.params['modelId'].value;
+  Models.getDeployments(modelId)
+    .then(function (response) {
+      res.end(JSON.stringify(response));
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};

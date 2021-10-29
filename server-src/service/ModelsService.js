@@ -22,6 +22,7 @@ exports.createModel = function(userId, body) {
     // dbConnection.connect();
     // TODO: add constraint on modelName
     dbConnection.query(`INSERT INTO Model (userId, modelName, modelType, parms) VALUES (${userId}, "${body.modelName}", "${body.modelType}", '${JSON.stringify(body.parameters)}')`, function (error, results, fields) {
+      // TODO: gracefully handle error
       if (error) throw error;
       console.log(results);
       console.log(fields);
@@ -127,6 +128,7 @@ exports.predictModel = function(userId, body) {
 exports.deleteModel = function(modelId) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`DELETE FROM Model WHERE id = ${modelId}`, function (error, results, fields) {
+      // TODO: gracefully handle error
       if (error) throw error;
       console.log(results);
       console.log(fields);
@@ -146,6 +148,7 @@ exports.deleteModel = function(modelId) {
 exports.getModelById = function(modelId, userId) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`SELECT * FROM Model WHERE id = ${modelId} AND userId = ${userId}`, function (error, results, fields) {
+      // TODO: gracefully handle error
       if (error) throw error;
       if (results.length > 0)
         results[0].parms = JSON.parse(results[0].parms);
@@ -194,6 +197,7 @@ exports.getModels = function(userId) {
       lo.forEach (results, function(model) {
         model.parms = JSON.parse(model.parms);
       });
+      // TODO: gracefully handle error
       if (error) throw error;
       resolve(results);
     });
@@ -268,5 +272,51 @@ exports.downloadData = function(req) {
       var fileStream = s3bucket.getObject(params).createReadStream();
       return resolve({ fileStream });
     });
+  });
+}
+
+
+/**
+ * Create a new deployment for a model
+ *
+ *
+ * body Deployment object that needs to be added to the account
+ * no response value expected for this operation
+ **/
+exports.createDeployment = function(userId, modelId, body) {
+  return new Promise(function(resolve, reject) {
+    console.log(body);
+    // dbConnection.connect();
+    dbConnection.query(`INSERT INTO Deployment (userId, modelId, deployName, description) VALUES (${userId}, ${modelId}, "${body.deploymentName}", "${body.description}")`, function (error, results, fields) {
+      // TODO: gracefully handle error
+      if (error) throw error;
+      console.log(results);
+      console.log(fields);
+
+      resolve();
+    });
+
+    // dbConnection.end();
+  });
+}
+
+
+/**
+ * Retrieve all deployments for a model
+ *
+ *
+ * no response value expected for this operation
+ **/
+exports.getDeployments = function(modelId) {
+  return new Promise(function(resolve, reject) {
+
+    dbConnection.query(`SELECT * FROM Deployment WHERE modelId = ${modelId}`, function (error, results, fields) {
+      // TODO: gracefully handle error
+      if (error) throw error;
+      resolve(results);
+    });
+
+    // dbConnection.end();
+
   });
 }
