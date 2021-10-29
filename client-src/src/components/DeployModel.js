@@ -32,27 +32,27 @@ export default class DeployModel extends React.Component {
   }
 
   componentDidMount = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let splitPath = window.location.pathname.split('/');
     let modelId = splitPath[splitPath.length - 1];
     if (modelId) {
       this.setState({ modelId: modelId });
       await axios.get(
-        process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + modelId,
+        process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + modelId + '/deployments',
         {
           headers: {
             Authorization: 'Bearer ' + sessionStorage.getItem('token')
           }
         }
       ).then(async res => {
-        this.setState({showLoading: false, apiResult: res?.data })
+        this.setState({ showLoading: false, apiResult: res?.data })
       }).catch(error => {
-        this.setState({showLoading: false});
+        this.setState({ showLoading: false });
         alert(error);
       })
     }
     else {
-      alert("Failed to retrieve model");
+      alert("Failed to retrieve deployment information");
       window.location = '/';
     }
   }
@@ -62,7 +62,7 @@ export default class DeployModel extends React.Component {
   }
 
   uploadTrainingAndClassificationData = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let form_data = new FormData();
     form_data.append('trainingData', this.state.trainingData)
     form_data.append('classificationData', this.state.trainingClassificationData)
@@ -81,13 +81,13 @@ export default class DeployModel extends React.Component {
         res.data.classificationData
       );
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   trainAgainstModelApiCall = async (trainingDataPath, classificationDataPath) => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/training',
@@ -105,17 +105,17 @@ export default class DeployModel extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert("Training model in progress!")
       // window.location = '/';
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   uploadTestingAndClassificationData = async () => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     let form_data = new FormData();
     form_data.append('trainingData', this.state.testingData)
     form_data.append('classificationData', this.state.testingClassificationData)
@@ -134,13 +134,13 @@ export default class DeployModel extends React.Component {
         res.data.classificationData
       );
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   testAgainstModelApiCall = async (testingDataPath, classificationDataPath) => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to test against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/testing',
@@ -158,11 +158,11 @@ export default class DeployModel extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert("Testing model in progress!")
       // window.location = '/';
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
@@ -186,13 +186,13 @@ export default class DeployModel extends React.Component {
         res.data.predictionData,
       );
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
 
   predictAgainstModelApiCall = async (predictionDataPath) => {
-    this.setState({showLoading: true});
+    this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to predict against the model and pass correct parameters
       process.env.REACT_APP_BACKEND_API_URL + '/v1/predicting',
@@ -210,10 +210,10 @@ export default class DeployModel extends React.Component {
       },
     ).then(res => {
       let processedResString = JSON.parse(res.data.split("Return object: ")[1]);
-      this.setState({showLoading: false, showPredictionResult: true, predictionResult: processedResString.prediction});
+      this.setState({ showLoading: false, showPredictionResult: true, predictionResult: processedResString.prediction });
       // window.location = '/';
     }).catch(error => {
-      this.setState({showLoading: false});
+      this.setState({ showLoading: false });
       alert(error);
     })
   }
@@ -324,25 +324,27 @@ export default class DeployModel extends React.Component {
       <div>
         <NavBar />
         <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
-          <h3>Deploy {this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
+          <h3>Deploy {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].deployName : ''}</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
             <Card style={{ height: '50%', padding: "2%" }}>
-              <h3>Details:</h3>
-              <p>Name: {this?.state?.apiResult?.modelName} </p>
-              <p>ID: {this?.state?.apiResult?.id}</p>
+              <h3>Deployment Description:</h3>
+              <p>
+                {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].description : ''}
+              </p>
+              {/* <p>Deployment Name: {this?.state?.apiResult?.deploymentName} </p>
+              <p>Deployment Description: {this?.state?.apiResult?.deploymentDescription} </p> */}
+
+              {/* <p>ID: {this?.state?.apiResult?.id}</p>
               {
                 this?.state?.apiResult?.parms ?
                   <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>
                   :
                   <p>Parameters: N/A</p>
               }
-              <p>Model Type: {this?.state?.apiResult?.modelType}</p>
-              <p>Status: {this?.state?.apiResult?.status}</p>
-              <p>Training input size:</p>
-              <p>Testing input size:</p>
-              <p>Prediction status:</p>
+              <p>Model Type: {this?.state?.apiResult?.modelType}</p> */}
+              {/* <p>Status: {this?.state?.apiResult?.status}</p> */}
             </Card>
           </div>
           <div style={{ width: '40%', paddingLeft: "2%" }}>
@@ -418,9 +420,9 @@ export default class DeployModel extends React.Component {
             </Card>
           </div>
         </div>
-        <div style={{ padding: "2%" }}>
+        {/* <div style={{ padding: "2%" }}>
           <Button onClick={this.handleDetails}>Details</Button>
-        </div>
+        </div> */}
         <Backdrop
           style={{ zIndex: 1 }}
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -443,7 +445,7 @@ export default class DeployModel extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => {this.setState({showPredictionResult: false})}} autoFocus>Close</Button>
+            <Button onClick={() => { this.setState({ showPredictionResult: false }) }} autoFocus>Close</Button>
           </DialogActions>
         </Dialog>
       </div>

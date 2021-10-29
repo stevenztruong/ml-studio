@@ -28,11 +28,17 @@ export default class ModelDetails extends React.Component {
       apiResult: {},
       showTestResult: false,
       testResult: '',
-      showDeleteModal: false
+      showDeleteModal: false,
+      showDeployModal: false,
+      description: ''
     };
   }
 
   componentDidMount = async () => {
+    this.fetchModelDetails();
+  }
+
+  fetchModelDetails = async () => {
     this.setState({ showLoading: true });
     let splitPath = window.location.pathname.split('/');
     let modelId = splitPath[splitPath.length - 1];
@@ -47,6 +53,20 @@ export default class ModelDetails extends React.Component {
         }
       ).then(async res => {
         this.setState({ showLoading: false, apiResult: res?.data })
+      }).catch(error => {
+        this.setState({ showLoading: false });
+        alert(error);
+      })
+      this.setState({ modelId: modelId });
+      await axios.get(
+        process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + modelId + '/deployments',
+        {
+          headers: {
+            Authorization: 'Bearer ' + sessionStorage.getItem('token')
+          }
+        }
+      ).then(async res => {
+        this.setState({ showLoading: false, deploymentApiResult: res?.data })
       }).catch(error => {
         this.setState({ showLoading: false });
         alert(error);
@@ -172,10 +192,9 @@ export default class ModelDetails extends React.Component {
   uploadPredictionData = async () => {
     this.setState({ showLoading: true });
     let form_data = new FormData();
-    form_data.append('predictionData', this.state.predictionData)
+    form_data.append('predictionData', this.state.predictionData);
 
     await axios.post(
-      // TODO: Upload data using correct path
       process.env.REACT_APP_BACKEND_API_URL + '/v1/data',
       form_data,
       {
@@ -185,7 +204,7 @@ export default class ModelDetails extends React.Component {
       },
     ).then(async res => {
       await this.predictAgainstModelApiCall(
-        res.data.prediction_data,
+        res.data.predictionData,
       );
     }).catch(error => {
       this.setState({ showLoading: false });
@@ -197,13 +216,13 @@ export default class ModelDetails extends React.Component {
     this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to predict against the model and pass correct parameters
-      // process.env.REACT_APP_BACKEND_API_URL + '/v1/models',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/predicting',
       {
         userId: 1,
-        modelType: this.state.selectedModel,
-        parameters: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
+        modelType: this.state.apiResult.modelType,
+        params: this?.state?.apiResult?.parms ? this?.state?.apiResult?.parms : {},
         predictionData: predictionDataPath,
-        modelName: this.state.modelName
+        modelName: this.state.apiResult.modelName,
       },
       {
         headers: {
@@ -211,9 +230,9 @@ export default class ModelDetails extends React.Component {
         }
       },
     ).then(res => {
-      this.setState({ showLoading: false });
-      alert("Model creation in progress!")
-      window.location = '/';
+      let processedResString = JSON.parse(res.data.split("Return object: ")[1]);
+      this.setState({ showLoading: false, showPredictionResult: true, predictionResult: processedResString.prediction });
+      // window.location = '/';
     }).catch(error => {
       this.setState({ showLoading: false });
       alert(error);
@@ -232,6 +251,29 @@ export default class ModelDetails extends React.Component {
       this.setState({ showLoading: false });
       alert("Successfully deleted model id: " + id);
       window.location = '/';
+    }).catch(error => {
+      this.setState({ showLoading: false });
+      alert(error);
+    })
+  }
+
+  deployModelApiCall = async (id, description, deploymentName) => {
+    await axios.post(
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + id + '/deployments',
+      {
+        deploymentName: deploymentName,
+        description: description,
+        modelId: parseInt(id),
+      },
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      }
+    ).then(res => {
+      this.setState({ showLoading: false });
+      alert("Successfully deployed model id: " + id);
+      // window.location = '/';
     }).catch(error => {
       this.setState({ showLoading: false });
       alert(error);
@@ -322,11 +364,15 @@ export default class ModelDetails extends React.Component {
   }
 
   showDeleteModalHandler = () => {
-    this.setState({showDeleteModal: true});
+    this.setState({ showDeleteModal: true });
   }
 
   handleDeleteModelClose = () => {
-    this.setState({showDeleteModal: false});
+    this.setState({ showDeleteModal: false });
+  }
+
+  handleDeployModalClose = () => {
+    this.setState({ showDeployModal: false });
   }
 
   handleDelete = async () => {
@@ -335,9 +381,16 @@ export default class ModelDetails extends React.Component {
     this.setState({ showLoading: false });
   }
 
-  handleDeploy = () => {
-    // this.setState({ showLoading: true });
-    window.location = '/deploy/' + this.state.modelId;
+  handleDeploy = async () => {
+    this.setState({ showLoading: true });
+    await this.deployModelApiCall(this.state.modelId, this.state.description, this.state.deploymentName);
+    this.fetchModelDetails();
+    this.setState({ showLoading: false, showDeployModal: false });
+  }
+
+  handleShowDeploy = () => {
+    this.setState({ showDeployModal: true });
+    // window.location = '/deploy/' + this.state.modelId;
   }
 
   render() {
@@ -368,10 +421,17 @@ export default class ModelDetails extends React.Component {
                   <p>Parameters: N/A</p>
               }
               <p>Model Type: {this?.state?.apiResult?.modelType}</p>
-              <p>Status: {this?.state?.apiResult?.status}</p>
-              <p>Training input size:</p>
-              <p>Testing input size:</p>
-              <p>Prediction status:</p>
+              {
+                this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length > 0?
+                  <span style={{ display: 'inline-block' }}>
+                    {'Deployment URL: '}
+                    <a href={window.location.href.replace('/model/', '/deploy/')}>{window.location.href.replace('/model/', '/deploy/')}</a>
+                  </span>
+                  :
+                  <div />
+              }
+              {/* <p>Deployment URL: {)}</p> */}
+              {/* <p>Status: {this?.state?.apiResult?.status}</p> */}
             </Card>
           </div>
           <div style={{ width: '40%', paddingLeft: "2%" }}>
@@ -427,7 +487,7 @@ export default class ModelDetails extends React.Component {
                 </Button>
               </div>
             </Card>
-            {/* <Card style={{ padding: "2%", marginBottom: "5%" }}>
+            <Card style={{ padding: "2%", marginBottom: "5%" }}>
               <h3>Predict against model:</h3>
               <FormLabel component="legend">Upload prediction data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
@@ -444,13 +504,17 @@ export default class ModelDetails extends React.Component {
                   Predict
                 </Button>
               </div>
-            </Card> */}
+            </Card>
           </div>
         </div>
         <div style={{ padding: "2%" }}>
           <Button onClick={this.handleDownload}>Download</Button>
           <Button onClick={this.showDeleteModalHandler}>Delete</Button>
-          <Button onClick={this.handleDeploy}>Deploy</Button>
+          {this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length <= 0 ?
+            <Button onClick={this.handleShowDeploy}>Deploy</Button>
+            :
+            <div />
+          }
         </div>
         <Backdrop
           style={{ zIndex: 1 }}
@@ -493,7 +557,65 @@ export default class ModelDetails extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleDeleteModelClose}>Cancel</Button>
-            <Button onClick={this.handleDelete} style={{backgroundColor: 'red', color: 'white'}} autoFocus>Delete</Button>
+            <Button onClick={this.handleDelete} style={{ backgroundColor: 'red', color: 'white' }} autoFocus>Delete</Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={this.state.showDeployModal}
+          onClose={this.handleDeployModalClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          contentStyle={{
+            width: '80%',
+            maxWidth: 'none',
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Enter Deployment details"}
+          </DialogTitle>
+          <DialogContent>
+            <div style={{ padding: "10px" }}>
+              <TextField
+                id="deploymentName"
+                onChange={(e) => { !(e.target.value.length > 20) && this.setState({ deploymentName: e.target.value }) }}
+                label="Deployment name"
+                variant="outlined"
+                value={this.state.deploymentName}
+                required
+              />
+            </div>
+            <div style={{ padding: "10px" }}>
+              <TextField
+                id="description"
+                onChange={(e) => { !(e.target.value.length > 20) && this.setState({ description: e.target.value }) }}
+                label="Description"
+                variant="outlined"
+                value={this.state.description}
+                required
+              />
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDeployModalClose}>Cancel</Button>
+            <Button onClick={this.handleDeploy} disabled={this.state.description === '' || this.state.deploymentName === ''} autoFocus>Deploy</Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={this.state.showPredictionResult}
+          onClose={this.handleDeleteModelClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            {"Prediction result:"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {this.state.predictionResult}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => { this.setState({ showPredictionResult: false }) }} autoFocus>Close</Button>
           </DialogActions>
         </Dialog>
       </div>

@@ -62,7 +62,7 @@ export default class ModelDashboard extends React.Component {
         }
       }
     ).then(res => {
-      this.setState({selectedDeleteModelId: '', showDeleteModal: false});
+      this.setState({ selectedDeleteModelId: '', showDeleteModal: false });
       this.getModelApiCall();
     }).catch(error => {
       alert(error);
@@ -73,8 +73,8 @@ export default class ModelDashboard extends React.Component {
     window.location = '/model/' + id;
   }
 
-  deleteModel =  async (id) => {
-    this.setState({selectedDeleteModelId: id, showDeleteModal: true});
+  deleteModel = async (id) => {
+    this.setState({ selectedDeleteModelId: id, showDeleteModal: true });
   }
 
   deployModel = async (id) => {
@@ -82,7 +82,7 @@ export default class ModelDashboard extends React.Component {
   }
 
   handleDeleteModelClose = () => {
-    this.setState({selectedDeleteModelId: '', showDeleteModal: false});
+    this.setState({ selectedDeleteModelId: '', showDeleteModal: false });
   }
 
   render() {
@@ -109,7 +109,7 @@ export default class ModelDashboard extends React.Component {
                     <p>User Id : {elem.userId}</p>
                     <p>Model Name : {elem.modelName}</p>
                     <p>Model Type : {elem.modelType}</p>
-                    <p>Status : {elem.status}</p>
+                    {/* <p>Status : {elem.status}</p> */}
                     {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
                     <Button style={{ marginLeft: "10px" }} onClick={() => { this.viewModelDetails(elem.id) }}>
                       Details
@@ -117,9 +117,9 @@ export default class ModelDashboard extends React.Component {
                     <Button style={{ marginLeft: "10px" }} onClick={() => { this.deleteModel(elem.id) }}>
                       Delete
                     </Button>
-                    <Button style={{ marginLeft: "10px" }} onClick={() => { this.deployModel(elem.id) }}>
+                    {/* <Button style={{ marginLeft: "10px" }} onClick={() => { this.deployModel(elem.id) }}>
                       Deploy
-                    </Button>
+                    </Button> */}
                   </Typography>
                 </CardContent>
               </Card>
@@ -149,9 +149,10 @@ export default class ModelDashboard extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.handleDeleteModelClose}>Cancel</Button>
-            <Button onClick={this.deleteModelApiCall} style={{backgroundColor: 'red', color: 'white'}} autoFocus>Delete</Button>
+            <Button onClick={this.deleteModelApiCall} style={{ backgroundColor: 'red', color: 'white' }} autoFocus>Delete</Button>
           </DialogActions>
         </Dialog>
+
       </div>
     )
   }
