@@ -1,14 +1,31 @@
-.login-form
+.page
 {
-justify-content: center;
-min-height: 90vh;
+    background-color: rgb(0, 153, 255);
 }
-.button-block{
-width: 100%;
-}
-.login-background
+.login-container
 {
-justify-content: center;
-min-height: 30vh;
-padding: 50px;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+.card
+{
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    width: 35%;
+    padding-bottom: 4%;
+}
+.avatar 
+{
+    background-color: red;
+}
+.form
+{
+    width: 70%;
+}
+.button
+{
+    width: 70%;
+    padding: 10;
+}
+
