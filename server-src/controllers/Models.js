@@ -58,6 +58,22 @@ module.exports.predictModel = function predictModel (req, res, next) {
     });
 };
 
+module.exports.predictDeployedModel = function predictDeployedModel (req, res, next) {
+  if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
+
+  var modelId = req.swagger.params['modelId'].value;
+  var deploymentId = req.swagger.params['deploymentId'].value;
+  var body = req.swagger.params['body'].value;
+  Models.predictDeployedModel(modelId, deploymentId, body.predictionData)
+    .then(function (response) {
+      if (!response) return utils.writeJson(res, utils.respondWithCode(404, {"status":"Not Found","statusCode":404}));
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.deleteModel = function deleteModel (req, res, next) {
   if (!DISABLE_AUTH && !req.user) return utils.writeJson(res, utils.respondWithCode(401, {"status":"Unauthenticated","statusCode":401}));
 

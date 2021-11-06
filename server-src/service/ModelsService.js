@@ -28,15 +28,15 @@ exports.createModel = function(userId, body) {
       console.log(fields);
       const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", body.modelType, body.trainingData, body.classificationData, body.modelName, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
       childPython.stdout.on('data', (data) => {
-          console.log(`stdout: ${data}`);
+        console.log(`stdout: ${data}`);
       })
 
       childPython.stderr.on('data', (data) => {
-          console.error(`stderr: ${data}`);
+        console.error(`stderr: ${data}`);
       })
 
       childPython.on('close', (code) => {
-          console.log(`child process exited with code: ${code}`);
+        console.log(`child process exited with code: ${code}`);
       })
       resolve();
     });
@@ -50,15 +50,15 @@ exports.trainModel = function(userId, body) {
     console.log(body);
     const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "trainmodel", body.modelType, body.trainingData, body.classificationData, `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
+      console.log(`stdout: ${data}`);
     })
 
     childPython.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
+      console.error(`stderr: ${data}`);
     })
 
     childPython.on('close', (code) => {
-        console.log(`child process exited with code: ${code}`);
+      console.log(`child process exited with code: ${code}`);
     })
     resolve();
   });
@@ -96,6 +96,40 @@ exports.predictModel = function(userId, body) {
     console.log(body);
     const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", body.modelType, body.predictionData, '{}', `${body.modelName}.pickle`, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
     childPython.stdout.on('data', (data) => {
+      const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
+      for (let line of newData) {
+        if (line.includes("Return object:")) {
+          resolve(line);
+          break;
+        }
+      }
+      console.log(`stdout: ${data}`);
+    })
+
+    childPython.stderr.on('data', (data) => {
+      resolve();
+      console.error(`stderr: ${data}`);
+    })
+
+    childPython.on('close', (code) => {
+      resolve();
+      console.log(`child process exited with code: ${code}`);
+    })
+  });
+}
+
+exports.predictDeployedModel = function(modelId, deploymentId, predictionData) {
+  return new Promise(function(resolve, reject) {
+    var query = `SELECT modelName, modelType, Model.userId userId from Model JOIN Deployment ON Model.id = Deployment.modelId where Deployment.id = ${deploymentId} AND Model.id = ${modelId}`;
+    console.log(query);
+    dbConnection.query(query, function (error, results, fields) {
+      // TODO: gracefully handle error
+      if (error) throw error;
+      if (results.length < 1)
+        return resolve(null);
+      console.log(results);
+      const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "predictmodel", results[0].modelType, predictionData, '{}', `${results[0].modelName}.pickle`, '{}'], { env: { ...process.env, userId: results[0].userId }});
+      childPython.stdout.on('data', (data) => {
         const newData = data.toString().split(/(?:\r\n|\r|\n)/g);
         for (let line of newData) {
           if (line.includes("Return object:")) {
@@ -104,17 +138,18 @@ exports.predictModel = function(userId, body) {
           }
         }
         console.log(`stdout: ${data}`);
-    })
-
-    childPython.stderr.on('data', (data) => {
+      })
+  
+      childPython.stderr.on('data', (data) => {
         resolve();
         console.error(`stderr: ${data}`);
-    })
-
-    childPython.on('close', (code) => {
+      })
+  
+      childPython.on('close', (code) => {
         resolve();
         console.log(`child process exited with code: ${code}`);
-    })
+      })
+    });
   });
 }
 
