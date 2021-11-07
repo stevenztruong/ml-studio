@@ -3,6 +3,8 @@
 - Install Node v15.14.0 and NPM 7.7.6
 - `cd client-src`
 - `yarn install && yarn start`
+- yarn add @material-ui/core
+- yarn add @material-ui/icons
 - `go to http://localhost:3000/viewmodels or http://localhost:3000/createmodel
 
 # Getting Started with Create React App
