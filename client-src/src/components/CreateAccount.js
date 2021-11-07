@@ -7,8 +7,10 @@ import {
   TextField,
   Grid
 } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
 
 import axios from 'axios';
+import './CreateAccount.css';
 
 export default class CreateAccount extends React.Component {
   constructor(props) {
@@ -50,7 +52,7 @@ export default class CreateAccount extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='page'>
         <div>
 
           <Grid
@@ -63,51 +65,58 @@ export default class CreateAccount extends React.Component {
 
           >
             <h1>Online Machine Learning Studio</h1>
-            <Card style={{ width: '30%', padding: "2%" }}>
-              <h2 style={{ padding: "10px" }}>CREATE ACCOUNT</h2>
-              <div style={{ padding: "10px" }}>
-                <TextField
-                  style={{ width: '80%' }}
-                  id="fullname"
-                  onChange={(e) => { this.setState({ fullName: e.target.value }) }}
-                  label="Full name"
-                  variant="outlined"
-                  value={this.state.fullName}
-                />
+            <Card className='card'>
+              <div className='create-account-container'>
+                <h2 >CREATE ACCOUNT</h2>
+                  <TextField
+                    margin="normal"
+                    className='form'
+                    id="fullname"
+                    onChange={(e) => { this.setState({ fullName: e.target.value }) }}
+                    label="Full name"
+                    variant="outlined"
+                    value={this.state.fullName}
+                  />
+                  <TextField
+                    margin="normal"
+                    className='form'
+                    id="email"
+                    onChange={(e) => { this.setState({ email: e.target.value }) }}
+                    label="Email"
+                    variant="outlined"
+                    value={this.state.email}
+                    type="email"
+                  />
+                  <TextField
+                    margin="normal"
+                    className='form'
+                    id="username"
+                    onChange={(e) => { this.setState({ username: e.target.value }) }}
+                    label="Username"
+                    variant="outlined"
+                    value={this.state.username}
+                  />
+                  <TextField
+                    margin="normal"
+                    className='form'
+                    id="password"
+                    onChange={(e) => { this.setState({ password: e.target.value }) }}
+                    label="Password"
+                    variant="outlined"
+                    value={this.state.password}
+                    type="password"
+                  />
+                <Box sx={{ m: "0.5rem" }}></Box>
+                <Button
+                  margin="normal"
+                  onClick={this.onCreateAccount}
+                  variant="contained"
+                  color="primary"
+                  className='button'
+                >
+                  Create Account
+                </Button>
               </div>
-              <div style={{ padding: "10px" }}>
-                <TextField
-                  style={{ width: '80%' }}
-                  id="email"
-                  onChange={(e) => { this.setState({ email: e.target.value }) }}
-                  label="Email"
-                  variant="outlined"
-                  value={this.state.email}
-                  type="email"
-                />
-              </div>
-              <div style={{ padding: "10px" }}>
-                <TextField
-                  style={{ width: '80%' }}
-                  id="username"
-                  onChange={(e) => { this.setState({ username: e.target.value }) }}
-                  label="Username"
-                  variant="outlined"
-                  value={this.state.username}
-                />
-              </div>
-              <div style={{ padding: "10px" }}>
-                <TextField
-                  style={{ width: '80%' }}
-                  id="password"
-                  onChange={(e) => { this.setState({ password: e.target.value }) }}
-                  label="Password"
-                  variant="outlined"
-                  value={this.state.password}
-                  type="password"
-                />
-              </div>
-              <Button onClick={this.onCreateAccount}>Create Account</Button>
             </Card>
           </Grid>
         </div>
