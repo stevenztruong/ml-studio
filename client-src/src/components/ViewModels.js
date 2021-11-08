@@ -16,6 +16,9 @@ import {
   DialogActions
 } from '@material-ui/core/'
 import axios from 'axios';
+import './ViewModels.css';
+import Divider from "@material-ui/core/Divider";
+
 
 export default class ModelDashboard extends React.Component {
   constructor(props) {
@@ -100,10 +103,11 @@ export default class ModelDashboard extends React.Component {
         >
           {this.state.data.map(elem => (
             <Grid item xs={12} sm={6} md={3} key={this.state.data.indexOf(elem)}>
-              <Card>
+              <Card className='card'>
                 <CardHeader
                   title={`Id : ${elem.id}`}
                 />
+                <Divider />
                 <CardContent>
                   <Typography variant="h5" gutterBottom>
                     <p>User Id : {elem.userId}</p>
@@ -111,10 +115,10 @@ export default class ModelDashboard extends React.Component {
                     <p>Model Type : {elem.modelType}</p>
                     {/* <p>Status : {elem.status}</p> */}
                     {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
-                    <Button style={{ marginLeft: "10px" }} onClick={() => { this.viewModelDetails(elem.id) }}>
+                    <Button className='button' onClick={() => { this.viewModelDetails(elem.id) }}>
                       Details
                     </Button>
-                    <Button style={{ marginLeft: "10px" }} onClick={() => { this.deleteModel(elem.id) }}>
+                    <Button className='button' onClick={() => { this.deleteModel(elem.id) }}>
                       Delete
                     </Button>
                     {/* <Button style={{ marginLeft: "10px" }} onClick={() => { this.deployModel(elem.id) }}>

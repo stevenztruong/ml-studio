@@ -1,4 +1,5 @@
 import React from 'react';
+import '../components/NavBar.css';
 import {
   AppBar,
   Toolbar,
@@ -6,7 +7,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
-import './NavBar.css';
+
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -25,18 +26,18 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <AppBar className='page'>
+      <AppBar style ={{position: "sticky",backgroundColor: "rgb(2, 23, 38)"}}>
         <Toolbar>
           <Grid container justify="flex-start">
-            <Button className='button' onClick={() => { window.location = '/' }}>
-              ML Studio
+            <Button style ={{color: "white", marginLeft: "20px"}} onClick={() => { window.location = '/' }}>
+              Online Machine Learning Studio
             </Button>
           </Grid>
           <Grid container justify="flex-end">
-            <Button className='end-button' onClick={() => { window.location = '/addmodel' }}>
+            <Button style ={{color: "white"}} onClick={() => { window.location = '/addmodel' }}>
               Add Model
             </Button>
-            <Button className='end-button' onClick={() => {
+            <Button style ={{color: "white", marginRight: "20px"}} onClick={() => {
               sessionStorage.removeItem('token');
               window.location = '/login';
             }}>

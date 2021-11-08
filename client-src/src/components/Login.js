@@ -75,7 +75,7 @@ export default class CreateAccount extends React.Component {
             style={{ minHeight: '100vh' }}
 
           >
-            <h1>Online Machine Learning Studio</h1>
+            <h1 style ={{color: "white"}}>Online Machine Learning Studio</h1>
             <Card className='card'>
               <div className='login-container'>
                 <Avatar className='avatar' >
