@@ -257,6 +257,24 @@ export default class ModelDetails extends React.Component {
     })
   }
 
+  downloadModelApiCall = async (fileName) => {
+    await axios.get(
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/data/' + fileName,
+      {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
+        }
+      }
+    ).then(res => {
+      this.setState({ showLoading: false });
+      alert("Successfully download model name: " + fileName);
+      window.location = '/';
+    }).catch(error => {
+      this.setState({ showLoading: false });
+      alert(error);
+    })
+  }
+
   deployModelApiCall = async (id, description, deploymentName) => {
     await axios.post(
       process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + id + '/deployments',
@@ -359,8 +377,10 @@ export default class ModelDetails extends React.Component {
     )
   }
 
-  handleDownload = () => {
+  handleDownload = async () => {
     this.setState({ showLoading: true });
+    await this.downloadModelApiCall(this?.state?.apiResult?.modelName);
+    this.setState({ showLoading: false });
   }
 
   showDeleteModalHandler = () => {
