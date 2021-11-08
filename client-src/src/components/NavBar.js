@@ -6,6 +6,7 @@ import {
   Grid,
   TextField
 } from '@material-ui/core';
+import './NavBar.css';
 
 class NavBar extends React.Component {
   constructor(props) {
@@ -24,18 +25,18 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <AppBar style={{ position: "sticky", backgroundColor: 'white' }}>
+      <AppBar className='page'>
         <Toolbar>
           <Grid container justify="flex-start">
-            <Button style={{ marginLeft: "10px" }} onClick={() => { window.location = '/' }}>
+            <Button className='button' onClick={() => { window.location = '/' }}>
               ML Studio
             </Button>
           </Grid>
           <Grid container justify="flex-end">
-            <Button style={{ marginLeft: "10px" }} onClick={() => { window.location = '/addmodel' }}>
+            <Button className='end-button' onClick={() => { window.location = '/addmodel' }}>
               Add Model
             </Button>
-            <Button style={{ marginLeft: "10px" }} onClick={() => {
+            <Button className='end-button' onClick={() => {
               sessionStorage.removeItem('token');
               window.location = '/login';
             }}>
