@@ -195,7 +195,7 @@ export default class DeployModel extends React.Component {
     this.setState({ showLoading: true });
     await axios.post(
       // TODO: Call the API to predict against the model and pass correct parameters
-      process.env.REACT_APP_BACKEND_API_URL + '/v1/predicting',
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/models/' + this.state.apiResult[0].modelId +  '/deployments/' + this.state.apiResult[0].id +  '/predicting',
       {
         userId: 1,
         modelType: this.state.apiResult.modelType,
