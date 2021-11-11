@@ -17,6 +17,7 @@ import {
 
 import NavBar from './NavBar';
 import axios from 'axios';
+import download from 'downloadjs';
 
 export default class ModelDetails extends React.Component {
   constructor(props) {
@@ -258,17 +259,18 @@ export default class ModelDetails extends React.Component {
   }
 
   downloadModelApiCall = async (fileName) => {
+    //const FileDownload = require('js-file-download');
     await axios.get(
-      process.env.REACT_APP_BACKEND_API_URL + '/v1/data/' + fileName,
+      process.env.REACT_APP_BACKEND_API_URL + '/v1/data/' + fileName + '.pickle',
       {
         headers: {
           Authorization: 'Bearer ' + sessionStorage.getItem('token')
         }
       }
     ).then(res => {
+      download(res.data, fileName + '.pickle' , res.headers['content-type']);
       this.setState({ showLoading: false });
       alert("Successfully download model name: " + fileName);
-      window.location = '/';
     }).catch(error => {
       this.setState({ showLoading: false });
       alert(error);

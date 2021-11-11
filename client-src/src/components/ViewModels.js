@@ -103,30 +103,32 @@ export default class ModelDashboard extends React.Component {
         >
           {this.state.data.map(elem => (
             <Grid item xs={12} sm={6} md={3} key={this.state.data.indexOf(elem)}>
-              <Card className='card'>
-                <CardHeader
-                  title={`Id : ${elem.id}`}
-                />
-                <Divider />
-                <CardContent>
-                  <Typography variant="h5" gutterBottom>
-                    <p>User Id : {elem.userId}</p>
-                    <p>Model Name : {elem.modelName}</p>
-                    <p>Model Type : {elem.modelType}</p>
-                    {/* <p>Status : {elem.status}</p> */}
-                    {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
-                    <Button className='button' onClick={() => { this.viewModelDetails(elem.id) }}>
-                      Details
-                    </Button>
-                    <Button className='button' onClick={() => { this.deleteModel(elem.id) }}>
-                      Delete
-                    </Button>
-                    {/* <Button style={{ marginLeft: "10px" }} onClick={() => { this.deployModel(elem.id) }}>
-                      Deploy
-                    </Button> */}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <div className='view-models-container'>
+                <Card className='view-models-card'>
+                  <CardHeader
+                    title={`Id : ${elem.id}`}
+                  />
+                  <Divider />
+                  <CardContent>
+                    <Typography variant="h5" gutterBottom>
+                      <p>User Id : {elem.userId}</p>
+                      <p>Model Name : {elem.modelName}</p>
+                      <p>Model Type : {elem.modelType}</p>
+                      {/* <p>Status : {elem.status}</p> */}
+                      {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
+                        <Button style={{  width: '30%', padding: '10px', backgroundColor: 'rgb(63, 124, 247)', marginTop: '5%',marginRight: '5%', color: 'white' }} onClick={() => { this.viewModelDetails(elem.id) }}>
+                          Details
+                        </Button>
+                        <Button style={{  width: '30%', padding: '10px', backgroundColor: 'rgb(63, 124, 247)', marginTop: '5%',marginRight: '5%', color: 'white' }} onClick={() => { this.deleteModel(elem.id) }}>
+                          Delete
+                        </Button>
+                      {/* <Button style={{ marginLeft: "10px" }} onClick={() => { this.deployModel(elem.id) }}>
+                        Deploy
+                      </Button> */}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </div>
             </Grid>
           ))}
         </Grid>
