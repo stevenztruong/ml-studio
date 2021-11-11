@@ -26,8 +26,8 @@ class NavBar extends React.Component {
 
   render() {
     return (
-      <AppBar style ={{position: "sticky",backgroundColor: "rgb(2, 23, 38)"}}>
-        <Toolbar>
+      <AppBar >
+        <Toolbar className = 'navbar-page'>
           <Grid container justify="flex-start">
             <Button style ={{color: "white", marginLeft: "20px"}} onClick={() => { window.location = '/' }}>
               Online Machine Learning Studio
