@@ -419,7 +419,7 @@ export default class ModelDetails extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
+        <div style={{ paddingLeft: '2%', paddingTop: '4%', width: '33%' }}>
           <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>

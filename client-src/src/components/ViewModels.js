@@ -92,7 +92,7 @@ export default class ModelDashboard extends React.Component {
     return (
       <div >
         <NavBar />
-        <h1 style={{ paddingLeft: '2%' }}>Models Dashboard </h1>
+        <h1 style={{ paddingTop: '4%', paddingLeft: '2%' }}>Models Dashboard </h1>
         <Grid
           container
           spacing={2}

@@ -15,6 +15,7 @@ import {
 
 import NavBar from './NavBar';
 import axios from 'axios';
+import './AddModel.css';
 
 export default class AddModel extends React.Component {
   constructor(props) {
@@ -169,11 +170,13 @@ export default class AddModel extends React.Component {
           <TextField
             style={{ width: '70%' }}
             id="SVMCParam"
-            onChange={(e) => { (e.target.value === '' || e.target.value >= 0) && this.setParameters('svmCParam', e.target.value) }}
+            onChange={(e) => { (e.target.value === '' || e.target.value > 0) && this.setParameters('svmCParam', e.target.value) }}
             label="C"
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.svmCParam}
+            error={this.state?.selectedParameters?.svmCParam !== '' && this.state?.selectedParameters?.svmCParam <= 0}
+            helperText={"A float value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -185,6 +188,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.svmMaxIterations}
+            error={this.state?.selectedParameters?.svmMaxIterations !== '' && this.state?.selectedParameters?.svmMaxIterations <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -231,6 +236,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.naiveBayesGaussianAlpha}
+            error={this.state?.selectedParameters?.naiveBayesGaussianAlpha !== '' && this.state?.selectedParameters?.naiveBayesGaussianAlpha <= 0}
+            helperText={"A float value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -259,7 +266,9 @@ export default class AddModel extends React.Component {
             label="Max depth"
             variant="outlined"
             type="number"
-            value={this.state?.selectedParameters?.naiveBayesGaussianAlpha}
+            value={this.state?.selectedParameters?.decisionTreeMaxDepth}
+            error={this.state?.selectedParameters?.decisionTreeMaxDepth !== '' && this.state?.selectedParameters?.decisionTreeMaxDepth <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
       </div>
@@ -289,6 +298,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.mlpHiddenLayers}
+            error={this.state?.selectedParameters?.mlpHiddenLayers !== '' && this.state?.selectedParameters?.mlpHiddenLayers <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -300,6 +311,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.mlpMaximumIterations}
+            error={this.state?.selectedParameters?.mlpMaximumIterations !== '' && this.state?.selectedParameters?.mlpMaximumIterations <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -329,6 +342,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.knnNNearestNeighbors}
+            error={this.state?.selectedParameters?.knnNNearestNeighbors !== '' && this.state?.selectedParameters?.knnNNearestNeighbors <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -367,6 +382,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.randomForestNumEstimators}
+            error={this.state?.selectedParameters?.randomForestNumEstimators !== '' && this.state?.selectedParameters?.randomForestNumEstimators <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -378,6 +395,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.randomForestMaxDepth}
+            error={this.state?.selectedParameters?.randomForestMaxDepth !== '' && this.state?.selectedParameters?.randomForestMaxDepth <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
       </div>
@@ -396,6 +415,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.sgdAlpha}
+            error={this.state?.selectedParameters?.sgdAlpha !== '' && this.state?.selectedParameters?.sgdAlpha <= 0}
+            helperText={"A float value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -407,6 +428,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.sgdMaxIter}
+            error={this.state?.selectedParameters?.sgdMaxIter !== '' && this.state?.selectedParameters?.sgdMaxIter <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -418,6 +441,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.sgdEpsilon}
+            error={this.state?.selectedParameters?.sgdEpsilon !== '' && this.state?.selectedParameters?.sgdEpsilon <= 0}
+            helperText={"A float value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -447,6 +472,8 @@ export default class AddModel extends React.Component {
             variant="outlined"
             type="number"
             value={this.state?.selectedParameters?.adaboostEstimators}
+            error={this.state?.selectedParameters?.adaboostEstimators !== '' && this.state?.selectedParameters?.adaboostEstimators <= 0}
+            helperText={"An integer value greater than 0"}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -459,6 +486,7 @@ export default class AddModel extends React.Component {
             type="number"
             helperText='Value is between 0 and 1 (noninclusive)'
             value={this.state?.selectedParameters?.adaboostLearningRate}
+            error={this.state?.selectedParameters?.adaboostLearningRate !== '' && this.state?.selectedParameters?.adaboostLearningRate <= 0 && this.state?.selectedParameters?.adaboostLearningRate > 1}
           />
         </div>
         <div style={{ padding: "2%" }}>
@@ -478,9 +506,9 @@ export default class AddModel extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ display: 'flex', height: '100%' }}>
-          <div style={{ width: '33%', height: '100%', padding: "2%" }}>
-            <Card style={{ height: '50%', padding: "2%" }}>
+        <div style={{ display: 'flex', height: '100%', paddingTop: '4%' }}>
+          <div style={{ width: '35%', height: '100%', padding: "2%" }}>
+            <Card className='add-model-card'>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Select a model:</FormLabel>
                 <RadioGroup aria-label="model" name="model" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
@@ -496,15 +524,15 @@ export default class AddModel extends React.Component {
                 </RadioGroup>
               </FormControl>
             </Card>
-            <Card style={{ height: '50%', padding: "2%", marginTop: '4%' }}>
+            <Card className='add-model-parameters-card'>
               <FormLabel component="legend">Model parameters:</FormLabel>
               {this.renderModelName()}
               <div></div>
               {this.renderModelParameters()}
             </Card>
           </div>
-          <div style={{ width: '33%', padding: "2%" }}>
-            <Card style={{ padding: "2%" }}>
+          <div style={{ width: '45%', padding: "2%" }}>
+            <Card className='add-model-card'>
               <FormLabel component="legend">Upload data:</FormLabel>
               <div style={{ padding: "10px" }}>
                 Training data (.json): &nbsp;
@@ -521,8 +549,9 @@ export default class AddModel extends React.Component {
             </Card>
           </div>
 
-          <div style={{ width: '33%', padding: "2%" }}>
+          <div style={{ width: '20%', padding: "2%" }}>
             <Button
+              style={{backgroundColor: 'rgb(63, 124, 247)'}}
               onClick={this.uploadData}
               disabled={
                 !(
