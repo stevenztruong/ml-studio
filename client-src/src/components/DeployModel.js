@@ -17,6 +17,7 @@ import {
 
 import NavBar from './NavBar';
 import axios from 'axios';
+import './DeployModel.css';
 
 export default class DeployModel extends React.Component {
   constructor(props) {
@@ -327,8 +328,8 @@ export default class DeployModel extends React.Component {
           <h3>Deploy {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].deployName : ''}</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
-          <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
-            <Card style={{ height: '50%', padding: "2%" }}>
+          <div className='deploy-model-container'>
+            <Card className='deploy-model-card'>
               <h3>Deployment Description:</h3>
               <p>
                 {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].description : ''}
@@ -347,7 +348,7 @@ export default class DeployModel extends React.Component {
               {/* <p>Status: {this?.state?.apiResult?.status}</p> */}
             </Card>
           </div>
-          <div style={{ width: '40%', paddingLeft: "2%" }}>
+          <div className='deploy-model-container'>
             {/* <Card style={{ padding: "2%", marginBottom: "5%" }}>
               <h3>Train model:</h3>
               <FormLabel component="legend">Upload training and classification data:</FormLabel>
@@ -400,22 +401,33 @@ export default class DeployModel extends React.Component {
                 </Button>
               </div>
             </Card> */}
-            <Card style={{ padding: "2%", marginBottom: "5%" }}>
+            <Card className='deploy-model-card'>
               <h3>Predict against model:</h3>
               <FormLabel component="legend">Upload prediction data:</FormLabel>
               <div style={{ 'display': 'inline-flex' }}>
-                <div style={{ padding: "10px" }}>
+                <div style={{ 'display': 'block', paddingTop: "20px" }}>
                   Prediction data (.json): &nbsp;
-                  <input type="file"
+                  <input 
+                    style={{ paddingLeft: "10px" }}
+                    type="file"
                     id="uploadpredictionData"
                     accept="application/JSON" onChange={this.updatePredictionData} required />
-                </div>
-                <Button
-                  disabled={!(this.state.predictionData)}
-                  onClick={this.uploadPredictionData}
-                >
+                  <Button 
+                    style={{  
+                      height:'5%', 
+                      width: '30%', 
+                      padding: '20px',
+                      marginLeft: '1%', 
+                      marginTop: '3%', 
+                      backgroundColor: !(this.state.predictionData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
+                      color: 'white'
+                    }}
+                    disabled={!(this.state.predictionData)}
+                    onClick={this.uploadPredictionData}
+                  >
                   Predict
                 </Button>
+                </div>
               </div>
             </Card>
           </div>

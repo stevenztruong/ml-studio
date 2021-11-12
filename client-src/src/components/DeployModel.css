@@ -1,0 +1,27 @@
+.deploy-model-page
+{
+    background-color: rgb(2, 23, 38);
+}
+.deploy-model-container
+{
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    width: 40%;
+    height: 100%;
+    margin-left: 2%;
+}
+.deploy-model-card
+{
+    background-color: rgb(232, 232, 232) !important;
+    padding-left: 2%;
+    height: 200px;
+    padding-bottom: 2%;
+}
+.deploy-model-button
+{
+    width: 30%;
+    padding: 10px;
+    background-color: rgb(63, 124, 247);
+    margin-top: 5%;
+    margin-right: 5%;
+    color: white;
+}
