@@ -12,9 +12,8 @@
 .deploy-model-card
 {
     background-color: rgb(232, 232, 232) !important;
-    padding-left: 2%;
     height: 200px;
-    padding-bottom: 2%;
+    padding: 2% ;
 }
 .deploy-model-button
 {

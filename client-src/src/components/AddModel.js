@@ -506,52 +506,79 @@ export default class AddModel extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ display: 'flex', height: '100%', paddingTop: '4%' }}>
-          <div style={{ width: '35%', height: '100%', padding: "2%" }}>
-            <Card className='add-model-card'>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">Select a model:</FormLabel>
-                <RadioGroup aria-label="model" name="model" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
-                  <FormControlLabel value="SVM" control={<Radio />} label="SVM" />
-                  <FormControlLabel value="Gaussian Naive Bayes" control={<Radio />} label="Gaussian Naive Bayes" />
-                  <FormControlLabel value="Multinomial Naive Bayes" control={<Radio />} label="Multinomial Naive Bayes" />
-                  <FormControlLabel value="Decision Tree Classifier" control={<Radio />} label="Decision Tree Classifier" />
-                  <FormControlLabel value="Multi-layer Perceptron Classifier" control={<Radio />} label="Multi-layer Perceptron Classifier" />
-                  <FormControlLabel value="KNN" control={<Radio />} label="KNN" />
-                  <FormControlLabel value="Random Forest" control={<Radio />} label="Random Forest Classifier" />
-                  <FormControlLabel value="SGD" control={<Radio />} label="SGD" />
-                  <FormControlLabel value="Adaboost" control={<Radio />} label="Adaboost" />
-                </RadioGroup>
-              </FormControl>
-            </Card>
-            <Card className='add-model-parameters-card'>
-              <FormLabel component="legend">Model parameters:</FormLabel>
-              {this.renderModelName()}
-              <div></div>
-              {this.renderModelParameters()}
-            </Card>
+        <div >
+          {/* <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3> */}
+          <h1 style={{ paddingTop: '50px',  paddingLeft: '50px' }}>Add Model </h1>
+        </div>
+        <div style={{ display: 'flex', height: '100%'}}>
+          <div 
+            style={{ 
+              paddingLeft: '1%',
+              width: '35%', 
+              display: 'block'
+          }}>
+            <div className='add-model-container'>
+              <Card className='add-model-card'>
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Select a model:</FormLabel>
+                  <RadioGroup aria-label="model" name="model" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
+                    <FormControlLabel value="SVM" control={<Radio />} label="SVM" />
+                    <FormControlLabel value="Gaussian Naive Bayes" control={<Radio />} label="Gaussian Naive Bayes" />
+                    <FormControlLabel value="Multinomial Naive Bayes" control={<Radio />} label="Multinomial Naive Bayes" />
+                    <FormControlLabel value="Decision Tree Classifier" control={<Radio />} label="Decision Tree Classifier" />
+                    <FormControlLabel value="Multi-layer Perceptron Classifier" control={<Radio />} label="Multi-layer Perceptron Classifier" />
+                    <FormControlLabel value="KNN" control={<Radio />} label="KNN" />
+                    <FormControlLabel value="Random Forest" control={<Radio />} label="Random Forest Classifier" />
+                    <FormControlLabel value="SGD" control={<Radio />} label="SGD" />
+                    <FormControlLabel value="Adaboost" control={<Radio />} label="Adaboost" />
+                  </RadioGroup>
+                </FormControl>
+              </Card>
+            </div>
+            <div className='add-model-container'>
+              <Card className='add-model-parameters-card'>
+                <FormLabel component="legend">Model parameters:</FormLabel>
+                {this.renderModelName()}
+                <div></div>
+                {this.renderModelParameters()}
+              </Card>
+            </div>
           </div>
-          <div style={{ width: '45%', padding: "2%" }}>
-            <Card className='add-model-card'>
-              <FormLabel component="legend">Upload data:</FormLabel>
-              <div style={{ padding: "10px" }}>
-                Training data (.json): &nbsp;
-                <input type="file"
-                  id="uploadTrainingData"
-                  accept="application/JSON" onChange={this.updateTrainingData} required />
-              </div>
-              <div style={{ padding: "10px" }}>
-                Classification data (.json): &nbsp;
-                <input type="file"
-                  id="uploadClassificationData"
-                  accept="application/JSON" onChange={this.updateClassificationData} required />
-              </div>
-            </Card>
+          <div style={{ width: '45%', paddingLeft: "2%" }}>
+            <div className='add-model-container'>
+              <Card className='add-model-card'>
+                <FormLabel component="legend">Upload data:</FormLabel>
+                <div style={{ padding: "10px" }}>
+                  Training data (.json): &nbsp;
+                  <input type="file"
+                    id="uploadTrainingData"
+                    accept="application/JSON" onChange={this.updateTrainingData} required />
+                </div>
+                <div style={{ padding: "10px" }}>
+                  Classification data (.json): &nbsp;
+                  <input type="file"
+                    id="uploadClassificationData"
+                    accept="application/JSON" onChange={this.updateClassificationData} required />
+                </div>
+              </Card>
+            </div>
           </div>
 
-          <div style={{ width: '20%', padding: "2%" }}>
+          <div style={{ width: '20%', paddingLeft: "4%", paddingTop: "3%" }}>
             <Button
-              style={{backgroundColor: 'rgb(63, 124, 247)'}}
+              style={{  
+                height:'5%', 
+                width: '40%', 
+                padding: '20px',
+                marginLeft: '1%', 
+                backgroundColor: !(this.state.modelName
+                  && this.state.modelName != ''
+                  && this.state.trainingData
+                  && this.state.classificationData
+                ) ?  'rgb(162, 162, 162)' 
+                : 'rgb(63, 124, 247)',
+                color: 'white'
+              }}
               onClick={this.uploadData}
               disabled={
                 !(

@@ -324,18 +324,16 @@ export default class DeployModel extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ paddingLeft: '2%', paddingTop: '4%', width: '33%' }}>
-          <h3>Deploy {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].deployName : ''}</h3>
+        <div >
+          <h1 style={{ paddingTop: '50px',  paddingLeft: '50px' }}>Deploy Model</h1>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
           <div className='deploy-model-container'>
             <Card className='deploy-model-card'>
+              <h3>Deployment Name:</h3>
+              <p>{this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].deployName : ''} </p>
               <h3>Deployment Description:</h3>
-              <p>
-                {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].description : ''}
-              </p>
-              {/* <p>Deployment Name: {this?.state?.apiResult?.deploymentName} </p>
-              <p>Deployment Description: {this?.state?.apiResult?.deploymentDescription} </p> */}
+              <p>{this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].description : ''} </p>
 
               {/* <p>ID: {this?.state?.apiResult?.id}</p>
               {
