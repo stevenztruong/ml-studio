@@ -92,14 +92,14 @@ export default class ModelDashboard extends React.Component {
     return (
       <div >
         <NavBar />
-        <h1 style={{ paddingLeft: '2%' }}>Models Dashboard </h1>
+        <h1 style={{ paddingTop: '50px',  paddingLeft: '50px' }}>Models Dashboard </h1>
         <Grid
           container
           spacing={2}
           direction="row"
           justify="flex-start"
           alignItems="flex-start"
-          style={{ padding: '2%' }}
+          style={{ paddingLeft: '2%' }}
         >
           {this.state.data.map(elem => (
             <Grid item xs={12} sm={6} md={3} key={this.state.data.indexOf(elem)}>
