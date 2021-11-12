@@ -1,0 +1,32 @@
+.model-details-page
+{
+    background-color: rgb(2, 23, 38);
+}
+.model-details-container1
+{
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    width: 97%;
+    margin-left: 2%;
+}
+.model-details-container2
+{
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+    width: 100%;
+    margin-left: 4%;
+}
+.model-details-card
+{
+    background-color: rgb(232, 232, 232) !important;
+    height: 40%;
+    margin-bottom: 6% ;
+    padding: 4% ;
+}
+.model-details-button
+{
+    width: 30%;
+    padding: 10px;
+    background-color: rgb(63, 124, 247);
+    margin-top: 5%;
+    margin-right: 5%;
+    color: white;
+}

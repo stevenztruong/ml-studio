@@ -18,6 +18,7 @@ import {
 import NavBar from './NavBar';
 import axios from 'axios';
 import download from 'downloadjs';
+import './ModelDetails.css';
 
 export default class ModelDetails extends React.Component {
   constructor(props) {
@@ -31,7 +32,8 @@ export default class ModelDetails extends React.Component {
       testResult: '',
       showDeleteModal: false,
       showDeployModal: false,
-      description: ''
+      description: '',
+      buttonColor: {height:'5%', width: '20%', padding: '10px',marginLeft: '1%', marginTop: '1%',  backgroundColor: 'rgb(63, 124, 247)', color: 'Black' }
     };
   }
 
@@ -419,121 +421,172 @@ export default class ModelDetails extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
-          <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
+        <div >
+          {/* <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3> */}
+          <h1 style={{ paddingTop: '50px',  paddingLeft: '50px' }}>Model Details </h1>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
-          <div style={{ width: '33%', height: '100%', paddingLeft: "2%" }}>
-            <Card style={{ height: '50%', padding: "2%" }}>
-              <h3>Details: </h3>
-              <p>Name: {this?.state?.apiResult?.modelName} </p>
-              <p>ID: {this?.state?.apiResult?.id}</p>
-              {
-                this?.state?.apiResult?.parms ?
-                  // <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>
-                  <p>
-                    Parameters:
-                    {Object.keys(this?.state?.apiResult?.parms).map((keyName, i) => (
-                      <li key={i}>
-                        {keyName}: {this?.state?.apiResult?.parms[keyName]}
-                      </li>
-                    ))}
-                  </p>
-                  :
-                  <p>Parameters: N/A</p>
-              }
-              <p>Model Type: {this?.state?.apiResult?.modelType}</p>
-              {
-                this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length > 0?
-                  <span style={{ display: 'inline-block' }}>
-                    {'Deployment URL: '}
-                    <a href={window.location.href.replace('/model/', '/deploy/')}>{window.location.href.replace('/model/', '/deploy/')}</a>
-                  </span>
-                  :
-                  <div />
-              }
-              {/* <p>Deployment URL: {)}</p> */}
-              {/* <p>Status: {this?.state?.apiResult?.status}</p> */}
-            </Card>
+          <div style={{ width: '40%', paddingLeft: "1%" }}>
+            <div className='model-details-container1'>
+              <Card className='model-details-card'>
+                <h3>Details: </h3>
+                <p>Name: {this?.state?.apiResult?.modelName} </p>
+                <p>ID: {this?.state?.apiResult?.id}</p>
+                {
+                  this?.state?.apiResult?.parms ?
+                    // <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>
+                    <p>
+                      Parameters:
+                      {Object.keys(this?.state?.apiResult?.parms).map((keyName, i) => (
+                        <li key={i}>
+                          {keyName}: {this?.state?.apiResult?.parms[keyName]}
+                        </li>
+                      ))}
+                    </p>
+                    :
+                    <p>Parameters: N/A</p>
+                }
+                <p>Model Type: {this?.state?.apiResult?.modelType}</p>
+                {
+                  this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length > 0?
+                    <span style={{ display: 'inline-block' }}>
+                      {'Deployment URL: '}
+                      <a href={window.location.href.replace('/model/', '/deploy/')}>{window.location.href.replace('/model/', '/deploy/')}</a>
+                    </span>
+                    :
+                    <div />
+                }
+                {/* <p>Deployment URL: {)}</p> */}
+                {/* <p>Status: {this?.state?.apiResult?.status}</p> */}
+              </Card>
+            </div>
           </div>
-          <div style={{ width: '40%', paddingLeft: "2%" }}>
-            <Card style={{ padding: "2%", marginBottom: "5%" }}>
-              <h3>Train model:</h3>
-              <FormLabel component="legend">Upload training and classification data:</FormLabel>
-              <div style={{ 'display': 'inline-flex' }}>
-                <div>
-                  <div style={{ padding: "10px" }}>
-                    Training data (.json): &nbsp;
-                    <input type="file"
-                      id="uploadtrainingData"
-                      accept="application/JSON" onChange={this.updateTrainingData} required />
+          <div style={{ display: 'block', width: '40%' }}>
+            <div className='model-details-container2'>
+              <Card className='model-details-card'>
+                <h3>Train model:</h3>
+                <FormLabel component="legend">Upload training and classification data:</FormLabel>
+                <div style={{ 'display': 'block' }}>
+                  <div>
+                    <div style={{ padding: "10px" }}>
+                      Training data (.json): &nbsp;
+                      <input type="file"
+                        id="uploadtrainingData"
+                        accept="application/JSON" onChange={this.updateTrainingData} required />
+                    </div>
+                    <div style={{ padding: "10px" }}>
+                      Training classification data (.json): &nbsp;
+                      <input type="file"
+                        id="uploadClassificationData"
+                        accept="application/JSON" onChange={this.updateTrainingClassificationData} required />
+                    </div>
                   </div>
-                  <div style={{ padding: "10px" }}>
-                    Training classification data (.json): &nbsp;
-                    <input type="file"
-                      id="uploadClassificationData"
-                      accept="application/JSON" onChange={this.updateTrainingClassificationData} required />
-                  </div>
+                  <Button 
+                    style={{  
+                      height:'5%', 
+                      width: '20%', 
+                      padding: '10px',
+                      marginLeft: '1%', 
+                      marginTop: '1%', 
+                      backgroundColor: !(this.state.trainingData && this.state.trainingClassificationData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
+                      color: 'white'
+                    }}
+                    onClick={this.uploadTrainingAndClassificationData}
+                    disabled={!(this.state.trainingData && this.state.trainingClassificationData)}
+                  >
+                    Train
+                  </Button>
                 </div>
-                <Button
-                  onClick={this.uploadTrainingAndClassificationData}
-                  disabled={!(this.state.trainingData && this.state.trainingClassificationData)}
-                >
-                  Train
-                </Button>
-              </div>
-            </Card>
-            <Card style={{ padding: "2%", marginBottom: "5%" }}>
-              <h3>Test model:</h3>
-              <FormLabel component="legend">Upload testing and classification data:</FormLabel>
-              <div style={{ 'display': 'inline-flex' }}>
-                <div>
-                  <div style={{ padding: "10px" }}>
-                    Testing data (.json): &nbsp;
-                    <input type="file"
-                      id="uploadtrainingData"
-                      accept="application/JSON" onChange={this.updateTestingData} required />
+              </Card>
+            </div>
+            <div className='model-details-container2'>
+              <Card className='model-details-card'>
+                <h3>Test model:</h3>
+                <FormLabel component="legend">Upload testing and classification data:</FormLabel>
+                <div style={{ 'display': 'block' }}>
+                  <div>
+                    <div style={{ padding: "10px" }}>
+                      Testing data (.json): &nbsp;
+                      <input type="file"
+                        id="uploadtrainingData"
+                        accept="application/JSON" onChange={this.updateTestingData} required />
+                    </div>
+                    <div style={{ padding: "10px" }}>
+                      Testing classification data (.json): &nbsp;
+                      <input type="file"
+                        id="uploadClassificationData"
+                        accept="application/JSON" onChange={this.updateTestingClassificationData} required />
+                    </div>
                   </div>
+                  <Button
+                    style={{  
+                      height:'5%', 
+                      width: '20%', 
+                      padding: '10px',
+                      marginLeft: '1%', 
+                      marginTop: '1%', 
+                      backgroundColor: !(this.state.testingData && this.state.testingClassificationData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
+                      color: 'white'
+                    }}
+                    onClick={this.uploadTestingAndClassificationData}
+                    disabled={!(this.state.testingData && this.state.testingClassificationData)}
+                  >
+                    Test
+                  </Button>
+                </div>
+              </Card>
+            </div>
+            <div className='model-details-container2'>
+              <Card className='model-details-card'>
+                <h3>Predict against model:</h3>
+                <FormLabel component="legend">Upload prediction data:</FormLabel>
+                <div style={{ 'display': 'block' }}>
                   <div style={{ padding: "10px" }}>
-                    Testing classification data (.json): &nbsp;
+                    Prediction data (.json): &nbsp;
                     <input type="file"
-                      id="uploadClassificationData"
-                      accept="application/JSON" onChange={this.updateTestingClassificationData} required />
+                      id="uploadpredictionData"
+                      accept="application/JSON" onChange={this.updatePredictionData} required />
                   </div>
+                  <Button
+                    style={{  
+                      height:'5%', 
+                      width: '20%', 
+                      padding: '10px',
+                      marginLeft: '1%', 
+                      marginTop: '1%', 
+                      backgroundColor: !(this.state.predictionData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
+                      color: 'white'
+                    }}
+                    disabled={!(this.state.predictionData)}
+                    onClick={this.uploadPredictionData}
+                  >
+                    Predict
+                  </Button>
                 </div>
-                <Button
-                  onClick={this.uploadTestingAndClassificationData}
-                  disabled={!(this.state.testingData && this.state.testingClassificationData)}
-                >
-                  Test
-                </Button>
-              </div>
-            </Card>
-            <Card style={{ padding: "2%", marginBottom: "5%" }}>
-              <h3>Predict against model:</h3>
-              <FormLabel component="legend">Upload prediction data:</FormLabel>
-              <div style={{ 'display': 'inline-flex' }}>
-                <div style={{ padding: "10px" }}>
-                  Prediction data (.json): &nbsp;
-                  <input type="file"
-                    id="uploadpredictionData"
-                    accept="application/JSON" onChange={this.updatePredictionData} required />
-                </div>
-                <Button
-                  disabled={!(this.state.predictionData)}
-                  onClick={this.uploadPredictionData}
-                >
-                  Predict
-                </Button>
-              </div>
-            </Card>
+              </Card>
+            </div>
           </div>
         </div>
-        <div style={{ padding: "2%" }}>
-          <Button onClick={this.handleDownload}>Download</Button>
-          <Button onClick={this.showDeleteModalHandler}>Delete</Button>
+        <div style={{ paddingLeft: "2%" }}>
+          <Button 
+            style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
+            onClick={this.handleDownload}
+          >
+            Download
+          </Button>
+          <Button 
+            style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
+            onClick={this.showDeleteModalHandler}
+          >
+            Delete
+          </Button>
           {this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length <= 0 ?
-            <Button onClick={this.handleShowDeploy}>Deploy</Button>
+            <Button
+              style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }} 
+              onClick={this.handleShowDeploy}
+            >
+              Deploy
+            </Button>
             :
             <div />
           }
