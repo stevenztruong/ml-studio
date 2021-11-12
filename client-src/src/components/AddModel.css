@@ -1,0 +1,22 @@
+
+.add-model-card
+{
+    padding: 4%;
+    background-color: rgb(232, 232, 232) !important;
+}
+
+.add-model-parameters-card
+{
+    margin-top: 4%;
+    padding: 4%;
+    background-color: rgb(232, 232, 232) !important;
+}
+.add-model-button
+{
+    /* width: 30%;
+    padding: 10px; */
+    /* background-color: rgb(63, 124, 247); */
+    /* margin-top: 5%;
+    margin-right: 5%; */
+    color: rgb(63, 124, 247);;
+}

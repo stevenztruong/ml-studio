@@ -113,8 +113,19 @@ export default class CreateAccount extends React.Component {
                   variant="contained"
                   color="primary"
                   className='button'
+                  disabled={this.state.email === '' || this.state.password === '' || this.state.fullName === '' || this.state.username === '' || !(new RegExp(/^\w+@[A-Z_a-z]+?\.[a-zA-Z]{2,3}$/).test(this.state.email))}
                 >
                   Create Account
+                </Button>
+                <Box sx={{ m: "0.5rem" }}></Box>
+                <Button
+                  margin="normal"
+                  onClick={() => {window.location = '/login'}}
+                  variant="contained"
+                  color="primary"
+                  className='button'
+                >
+                  Back to login
                 </Button>
               </div>
             </Card>

@@ -105,17 +105,18 @@ export default class CreateAccount extends React.Component {
                     type="password"
                   />
                   <Box sx={{ m: "0.5rem" }}></Box>
-                  <Button 
+                  <Button
                     margin="normal"
                     onClick={this.onLogin}
                     variant="contained"
                     color="primary"
                     className='button'
+                    disabled={this.state.username === '' || this.state.password === ''}
                   >
                     SIGN IN
                   </Button>
                   <Box sx={{ m: "0.5rem" }}></Box>
-                  <Button 
+                  <Button
                     margin="normal"
                     onClick={() => { window.location = '/createaccount' }}
                     variant="contained"

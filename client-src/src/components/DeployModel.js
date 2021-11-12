@@ -324,7 +324,7 @@ export default class DeployModel extends React.Component {
     return (
       <div>
         <NavBar />
-        <div style={{ paddingLeft: '2%', paddingTop: '2%', width: '33%' }}>
+        <div style={{ paddingLeft: '2%', paddingTop: '4%', width: '33%' }}>
           <h3>Deploy {this?.state?.apiResult && this?.state?.apiResult.length > 0 ? this?.state?.apiResult[0].deployName : ''}</h3>
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
