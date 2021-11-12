@@ -421,14 +421,9 @@ export default class ModelDetails extends React.Component {
     return (
       <div>
         <NavBar />
-<<<<<<< HEAD
         <div >
           {/* <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3> */}
           <h1 style={{ paddingTop: '50px',  paddingLeft: '50px' }}>Model Details </h1>
-=======
-        <div style={{ paddingLeft: '2%', paddingTop: '4%', width: '33%' }}>
-          <h3>{this?.state?.apiResult?.modelName} (ID: {this?.state?.apiResult?.id})</h3>
->>>>>>> b915e7906a6a037fa759147be6c7a4d6c9f72f30
         </div>
         <div style={{ display: 'flex', height: '100%' }}>
           <div style={{ width: '40%', paddingLeft: "1%" }}>
