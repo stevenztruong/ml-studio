@@ -431,7 +431,6 @@ export default class ModelDetails extends React.Component {
               <Card className='model-details-card'>
                 <h3>Details: </h3>
                 <p>Name: {this?.state?.apiResult?.modelName} </p>
-                <p>ID: {this?.state?.apiResult?.id}</p>
                 {
                   this?.state?.apiResult?.parms ?
                     // <p>Parameters: {JSON.stringify(this?.state?.apiResult?.parms)}</p>

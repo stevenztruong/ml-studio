@@ -105,10 +105,6 @@ export default class ModelDashboard extends React.Component {
             <Grid item xs={12} sm={6} md={3} key={this.state.data.indexOf(elem)}>
               <div className='view-models-container'>
                 <Card className='view-models-card'>
-                  <CardHeader
-                    title={`Id : ${elem.id}`}
-                  />
-                  <Divider />
                   <CardContent>
                     <Typography variant="h5" gutterBottom>
                       <p>User Id : {elem.userId}</p>
