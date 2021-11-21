@@ -522,14 +522,14 @@ export default class AddModel extends React.Component {
                 <FormControl component="fieldset">
                   <FormLabel component="legend">Select a model:</FormLabel>
                   <RadioGroup aria-label="model" name="model" value={this.state.selectedModel} onChange={this.handleSelectedModelChange}>
-                    <FormControlLabel value="SVM" control={<Radio />} label="SVM" />
+                    <FormControlLabel value="SVM" control={<Radio />} label="Support Vector Machine (SVM)" />
                     <FormControlLabel value="Gaussian Naive Bayes" control={<Radio />} label="Gaussian Naive Bayes" />
                     <FormControlLabel value="Multinomial Naive Bayes" control={<Radio />} label="Multinomial Naive Bayes" />
                     <FormControlLabel value="Decision Tree Classifier" control={<Radio />} label="Decision Tree Classifier" />
-                    <FormControlLabel value="Multi-layer Perceptron Classifier" control={<Radio />} label="Multi-layer Perceptron Classifier" />
-                    <FormControlLabel value="KNN" control={<Radio />} label="KNN" />
+                    <FormControlLabel value="Multi-layer Perceptron Classifier" control={<Radio />} label="Multi-layer Perceptron Classifier (MLP)" />
+                    <FormControlLabel value="KNN" control={<Radio />} label="K-Nearest Neighbors (KNN)" />
                     <FormControlLabel value="Random Forest" control={<Radio />} label="Random Forest Classifier" />
-                    <FormControlLabel value="SGD" control={<Radio />} label="SGD" />
+                    <FormControlLabel value="SGD" control={<Radio />} label="Stochastic Gradient Descent (SGD)" />
                     <FormControlLabel value="Adaboost" control={<Radio />} label="Adaboost" />
                   </RadioGroup>
                 </FormControl>

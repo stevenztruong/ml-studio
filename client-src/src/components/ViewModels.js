@@ -88,6 +88,19 @@ export default class ModelDashboard extends React.Component {
     this.setState({ selectedDeleteModelId: '', showDeleteModal: false });
   }
 
+  getModelType = (type) => {
+    if (type === "SVM") {
+      return 'Support Vector Machine';
+    }
+    else if (type === "SGD") {
+      return 'Stochastic Gradient Descent';
+    }
+    else if (type === 'KNN') {
+      return 'K-Nearest Neighbors';
+    }
+    else return type;
+  }
+
   render() {
     return (
       <div >
@@ -109,7 +122,7 @@ export default class ModelDashboard extends React.Component {
                     <Typography variant="h5" gutterBottom>
                       {/* <p>User Id : {elem.userId}</p> */}
                       <p>Model Name : {elem.modelName}</p>
-                      <p>Model Type : {elem.modelType}</p>
+                      <p>Model Type : {this.getModelType(elem.modelType)}</p>
                       {/* <p>Status : {elem.status}</p> */}
                       {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
                         <Button style={{  width: '30%', padding: '10px', backgroundColor: 'rgb(63, 124, 247)', marginTop: '5%',marginRight: '5%', color: 'white' }} onClick={() => { this.viewModelDetails(elem.id) }}>

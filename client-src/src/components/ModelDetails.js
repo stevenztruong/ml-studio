@@ -417,6 +417,19 @@ export default class ModelDetails extends React.Component {
     // window.location = '/deploy/' + this.state.modelId;
   }
 
+  getModelType = (type) => {
+    if (type === "SVM") {
+      return 'Support Vector Machine';
+    }
+    else if (type === "SGD") {
+      return 'Stochastic Gradient Descent';
+    }
+    else if (type === 'KNN') {
+      return 'K-Nearest Neighbors';
+    }
+    else return type;
+  }
+
   render() {
     return (
       <div>
@@ -445,7 +458,7 @@ export default class ModelDetails extends React.Component {
                     :
                     <p>Parameters: N/A</p>
                 }
-                <p>Model Type: {this?.state?.apiResult?.modelType}</p>
+                <p>Model Type: {this.getModelType(this?.state?.apiResult?.modelType)}</p>
                 {
                   this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length > 0?
                     <span style={{ display: 'inline-block' }}>
@@ -480,13 +493,13 @@ export default class ModelDetails extends React.Component {
                         accept="application/JSON" onChange={this.updateTrainingClassificationData} required />
                     </div>
                   </div>
-                  <Button 
-                    style={{  
-                      height:'5%', 
-                      width: '20%', 
+                  <Button
+                    style={{
+                      height:'5%',
+                      width: '20%',
                       padding: '10px',
-                      marginLeft: '1%', 
-                      marginTop: '1%', 
+                      marginLeft: '1%',
+                      marginTop: '1%',
                       backgroundColor: !(this.state.trainingData && this.state.trainingClassificationData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
                       color: 'white'
                     }}
@@ -518,12 +531,12 @@ export default class ModelDetails extends React.Component {
                     </div>
                   </div>
                   <Button
-                    style={{  
-                      height:'5%', 
-                      width: '20%', 
+                    style={{
+                      height:'5%',
+                      width: '20%',
                       padding: '10px',
-                      marginLeft: '1%', 
-                      marginTop: '1%', 
+                      marginLeft: '1%',
+                      marginTop: '1%',
                       backgroundColor: !(this.state.testingData && this.state.testingClassificationData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
                       color: 'white'
                     }}
@@ -547,12 +560,12 @@ export default class ModelDetails extends React.Component {
                       accept="application/JSON" onChange={this.updatePredictionData} required />
                   </div>
                   <Button
-                    style={{  
-                      height:'5%', 
-                      width: '20%', 
+                    style={{
+                      height:'5%',
+                      width: '20%',
                       padding: '10px',
-                      marginLeft: '1%', 
-                      marginTop: '1%', 
+                      marginLeft: '1%',
+                      marginTop: '1%',
                       backgroundColor: !(this.state.predictionData) ?  'rgb(162, 162, 162)' : 'rgb(63, 124, 247)',
                       color: 'white'
                     }}
@@ -567,13 +580,13 @@ export default class ModelDetails extends React.Component {
           </div>
         </div>
         <div style={{ paddingLeft: "2%" }}>
-          <Button 
+          <Button
             style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
             onClick={this.handleDownload}
           >
             Download
           </Button>
-          <Button 
+          <Button
             style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
             onClick={this.showDeleteModalHandler}
           >
@@ -581,7 +594,7 @@ export default class ModelDetails extends React.Component {
           </Button>
           {this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length <= 0 ?
             <Button
-              style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }} 
+              style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
               onClick={this.handleShowDeploy}
             >
               Deploy
