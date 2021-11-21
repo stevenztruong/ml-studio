@@ -107,7 +107,7 @@ export default class ModelDashboard extends React.Component {
                 <Card className='view-models-card'>
                   <CardContent>
                     <Typography variant="h5" gutterBottom>
-                      <p>User Id : {elem.userId}</p>
+                      {/* <p>User Id : {elem.userId}</p> */}
                       <p>Model Name : {elem.modelName}</p>
                       <p>Model Type : {elem.modelType}</p>
                       {/* <p>Status : {elem.status}</p> */}
