@@ -183,7 +183,7 @@ export default class AddModel extends React.Component {
           <TextField
             style={{ width: '70%' }}
             id="SVMMaxIterations"
-            onChange={(e) => { (e.target.value >= -1 || e.target.value === '') && this.setParameters('svmMaxIterations', e.target.value) }}
+            onChange={(e) => { !e.target.value.includes('-') && (e.target.value > 0 || e.target.value === '') ? this.setParameters('svmMaxIterations', e.target.value) : this.setParameters('svmMaxIterations', '')}}
             label="Max iterations"
             variant="outlined"
             type="number"
@@ -511,10 +511,10 @@ export default class AddModel extends React.Component {
           <h1 style={{ paddingTop: '50px',  paddingLeft: '50px' }}>Add Model </h1>
         </div>
         <div style={{ display: 'flex', height: '100%'}}>
-          <div 
-            style={{ 
+          <div
+            style={{
               paddingLeft: '1%',
-              width: '35%', 
+              width: '35%',
               display: 'block'
           }}>
             <div className='add-model-container'>
@@ -566,16 +566,16 @@ export default class AddModel extends React.Component {
 
           <div style={{ width: '20%', paddingLeft: "4%", paddingTop: "3%" }}>
             <Button
-              style={{  
-                height:'5%', 
-                width: '40%', 
+              style={{
+                height:'5%',
+                width: '40%',
                 padding: '20px',
-                marginLeft: '1%', 
+                marginLeft: '1%',
                 backgroundColor: !(this.state.modelName
                   && this.state.modelName != ''
                   && this.state.trainingData
                   && this.state.classificationData
-                ) ?  'rgb(162, 162, 162)' 
+                ) ?  'rgb(162, 162, 162)'
                 : 'rgb(63, 124, 247)',
                 color: 'white'
               }}
