@@ -119,10 +119,12 @@ export default class ModelDashboard extends React.Component {
               <div className='view-models-container'>
                 <Card className='view-models-card'>
                   <CardContent>
-                    <Typography variant="h5" gutterBottom>
+                    <Typography variant="h6" className='.view-models-typography' gutterBottom>
                       {/* <p>User Id : {elem.userId}</p> */}
-                      <p>Model Name : {elem.modelName}</p>
-                      <p>Model Type : {this.getModelType(elem.modelType)}</p>
+                      <p>Model Name:</p>
+                      <p style={{marginLeft: '1.5em', minHeight: '3em'}}>{elem.modelName}</p>
+                      <p>Model Type:</p>
+                      <p style={{marginLeft: '1.5em', minHeight: '3em'}}>{this.getModelType(elem.modelType)}</p>
                       {/* <p>Status : {elem.status}</p> */}
                       {/* <p>Parms : {JSON.stringify(elem.parms)}</p> */}
                         <Button style={{  width: '30%', padding: '10px', backgroundColor: 'rgb(63, 124, 247)', marginTop: '5%',marginRight: '5%', color: 'white' }} onClick={() => { this.viewModelDetails(elem.id) }}>
