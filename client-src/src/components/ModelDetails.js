@@ -586,12 +586,6 @@ export default class ModelDetails extends React.Component {
           >
             Download
           </Button>
-          <Button
-            style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
-            onClick={this.showDeleteModalHandler}
-          >
-            Delete
-          </Button>
           {this?.state?.deploymentApiResult && this?.state?.deploymentApiResult.length <= 0 ?
             <Button
               style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
@@ -602,6 +596,12 @@ export default class ModelDetails extends React.Component {
             :
             <div />
           }
+          <Button
+            style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
+            onClick={this.showDeleteModalHandler}
+          >
+            Delete
+          </Button>
         </div>
         <Backdrop
           style={{ zIndex: 1 }}
@@ -648,6 +648,7 @@ export default class ModelDetails extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
+          fullWidth={true}
           open={this.state.showDeployModal}
           onClose={this.handleDeployModalClose}
           aria-labelledby="alert-dialog-title"
@@ -663,6 +664,7 @@ export default class ModelDetails extends React.Component {
           <DialogContent>
             <div style={{ padding: "10px" }}>
               <TextField
+                style={{ width: '100%'}}
                 id="deploymentName"
                 onChange={(e) => { !(e.target.value.length > 20) && this.setState({ deploymentName: e.target.value }) }}
                 label="Deployment name"
@@ -673,8 +675,9 @@ export default class ModelDetails extends React.Component {
             </div>
             <div style={{ padding: "10px" }}>
               <TextField
+                style={{ width: '100%'}}
                 id="description"
-                onChange={(e) => { !(e.target.value.length > 20) && this.setState({ description: e.target.value }) }}
+                onChange={(e) => { this.setState({ description: e.target.value }) }}
                 label="Description"
                 variant="outlined"
                 value={this.state.description}
