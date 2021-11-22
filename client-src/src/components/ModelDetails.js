@@ -594,7 +594,7 @@ export default class ModelDetails extends React.Component {
               Deploy
             </Button>
             :
-            <div />
+            <span />
           }
           <Button
             style={{  height:'5%', width: '8%', padding: '10px',marginLeft: '1%', marginTop: '1%', backgroundColor: 'rgb(63, 124, 247)', color: 'white' }}
