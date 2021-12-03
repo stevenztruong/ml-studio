@@ -23,7 +23,7 @@ exports.createModel = function(userId, body) {
     // TODO: add constraint on modelName
     dbConnection.query(`INSERT INTO Model (userId, modelName, modelType, parms) VALUES (${userId}, "${body.modelName}", "${body.modelType}", '${JSON.stringify(body.parameters)}')`, function (error, results, fields) {
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       console.log(results);
       console.log(fields);
       const childPython = spawn('python3', [__dirname + '/../ml_invocation/ml.py', "createmodel", body.modelType, body.trainingData, body.classificationData, body.modelName, JSON.stringify(body.parameters)], { env: { ...process.env, userId: userId }});
@@ -124,7 +124,7 @@ exports.predictDeployedModel = function(modelId, deploymentId, predictionData) {
     console.log(query);
     dbConnection.query(query, function (error, results, fields) {
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       if (results.length < 1)
         return resolve(null);
       console.log(results);
@@ -139,12 +139,12 @@ exports.predictDeployedModel = function(modelId, deploymentId, predictionData) {
         }
         console.log(`stdout: ${data}`);
       })
-  
+
       childPython.stderr.on('data', (data) => {
         resolve();
         console.error(`stderr: ${data}`);
       })
-  
+
       childPython.on('close', (code) => {
         resolve();
         console.log(`child process exited with code: ${code}`);
@@ -164,7 +164,7 @@ exports.deleteModel = function(modelId) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`DELETE FROM Model WHERE id = ${modelId}`, function (error, results, fields) {
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       console.log(results);
       console.log(fields);
       resolve();
@@ -184,7 +184,7 @@ exports.getModelById = function(modelId, userId) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`SELECT * FROM Model WHERE id = ${modelId} AND userId = ${userId}`, function (error, results, fields) {
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       if (results.length > 0)
         results[0].parms = JSON.parse(results[0].parms);
       resolve(results);
@@ -233,7 +233,7 @@ exports.getModels = function(userId) {
         model.parms = JSON.parse(model.parms);
       });
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       resolve(results);
     });
 
@@ -324,7 +324,7 @@ exports.createDeployment = function(userId, modelId, body) {
     // dbConnection.connect();
     dbConnection.query(`INSERT INTO Deployment (userId, modelId, deployName, description) VALUES (${userId}, ${modelId}, "${body.deploymentName}", "${body.description}")`, function (error, results, fields) {
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       console.log(results);
       console.log(fields);
 
@@ -347,7 +347,7 @@ exports.getDeployments = function(modelId) {
 
     dbConnection.query(`SELECT * FROM Deployment WHERE modelId = ${modelId}`, function (error, results, fields) {
       // TODO: gracefully handle error
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       resolve(results);
     });
 

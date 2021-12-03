@@ -57,7 +57,7 @@ exports.getUserByName = function(username) {
     // dbConnection.connect();
     dbConnection.query(`SELECT * from User where userName="${username}"`, function (error, results, fields) {
       console.log(error);
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       console.log(results);
       resolve(results);
     });
@@ -79,7 +79,7 @@ exports.loginUser = function(username,password) {
   return new Promise(function(resolve, reject) {
     dbConnection.query(`SELECT * from User where userName="${username}"`, function (error, results, fields) {
       console.log(error);
-      if (error) throw error;
+      if (error) return resolve({"status":error.code,"message":error.sqlMessage,"statusCode":500});
       var user = results[0];
       if (results.length < 1 || user.password !== password) return resolve({"status":"Unauthenticated","statusCode":401});
       user.sub = user.username;
