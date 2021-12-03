@@ -4,9 +4,10 @@ const { spawn } = require('child_process');
 const lo = require('lodash');
 const fs = require('fs');
 const AWS = require('aws-sdk');
-const BUCKET_NAME = 'mlstudio-bucket';
-const IAM_USER_KEY = 'AKIAQR7PIWMNIAGTK2H3';
-const IAM_USER_SECRET = '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';
+var s3Connection = require('../utils/dbUtil').s3Connection;
+const BUCKET_NAME = s3Connection.bucket_name;
+const IAM_USER_KEY = s3Connection.iam_user_key;
+const IAM_USER_SECRET = s3Connection.iam_user_secret;
 var dbConnection = require('../utils/dbUtil').connection;
 
 /**
