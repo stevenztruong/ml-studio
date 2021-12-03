@@ -80,7 +80,7 @@ CREATE TABLE Deployment (
 	]
 }
 ```
-4/ Replace the following line of code in /server-src/utils/dbUtil.js
+4/ Replace the following line of code in `/server-src/utils/dbUtil.js`
 ``` javascript
   bucket_name: 'replace with your bucket name',
   iam_user_key: 'replace with your access key id',
