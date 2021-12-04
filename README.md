@@ -87,10 +87,6 @@ CREATE TABLE Deployment (
   iam_user_secret: 'replace with your secret access key'
 ```
 
-Backend code goes to `server-src`.
-
-Frontend code goes to `client-src`.
-
 # Running the server
 See [/server-src/README.md](./server-src/README.md)
 
