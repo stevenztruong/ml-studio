@@ -86,6 +86,16 @@ CREATE TABLE Deployment (
   iam_user_key: 'replace with your access key id',
   iam_user_secret: 'replace with your secret access key'
 ```
+5/ Replace the following line of code in `/server-src/ml_invocation/models/s3Util.py`
+``` python
+BUCKET_NAME = 'replace with your bucket name'
+
+client = boto3.client(
+'s3',
+aws_access_key_id='replace with your access key id',
+aws_secret_access_key='replace with your secret access key'
+)
+```
 
 # Running the server
 See [/server-src/README.md](./server-src/README.md)
