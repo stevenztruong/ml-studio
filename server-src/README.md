@@ -1,9 +1,3 @@
-# Swagger generated server
-
-## Overview
-TBD
-
-
 ### Setting ML Layer
 
 * Install python 3.8
