@@ -10,6 +10,11 @@ TBD
 
 * pip install -U scikit-learn
 
+### Installing dependencies:
+To install packages for the server, go to `server-src` and run:
+```
+npm install
+```
 
 ### Running the server
 To run the server, run:
