@@ -90,3 +90,9 @@ CREATE TABLE Deployment (
 Backend code goes to `server-src`.
 
 Frontend code goes to `client-src`.
+
+# Running the server
+See [/server-src/README.md](./server-src/README.md)
+
+# Running the client
+See [/client-src/README.md](./client-src/README.md)
